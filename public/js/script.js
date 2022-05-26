@@ -95,28 +95,48 @@ const fetchData = async (link) => {
   return data;
 };
 
+const showFlexSection = (selector) => {
+  const recommendSection = document.querySelector(`#${selector}`);
+  recommendSection.style.display = "flex";
+}
+
+const showBlockSection = (selector) => {
+  const recommendSection = document.querySelector(`#${selector}`);
+  recommendSection.style.display = "block";
+}
+
+const hideSection = (selector) => {
+  const recommendSection = document.querySelector(`#${selector}`);
+  recommendSection.style.display = "none";
+}
+
 
 window.onload = async () => {
-  const { data, pagination } = await fetchData(
+  hideSection('recommend-section-main');
+  hideSection('popular-section-main');
+  showFlexSection('loading');
+  const { data : dataRecommend } = await fetchData(
     `https://api.jikan.moe/v4/recommendations/anime`
   );
-  const popular = await fetchData(
+  const { data : dataPopular } = await fetchData(
     `https://api.jikan.moe/v4/top/anime`
   );
-  const popularList = popular.data;
-  console.log(popularList);
-  data.slice(1, 16).forEach((card) => {
+  dataRecommend.slice(1, 16).forEach((card) => {
     const cardInfo = {
       image: card.entry[0].images.jpg.image_url,
       title : card.entry[0].title
     }
     createCardElement(cardInfo, 'recommend-section');
   });
-  popularList.slice(1, 16).forEach((card) => {
+  dataPopular.slice(1, 16).forEach((card) => {
     const cardInfo = {
       image: card.images.jpg.image_url,
       title : card.title
     }
     createCardElement(cardInfo , 'popular-section');
   });
+  hideSection('loading');
+  showBlockSection('recommend-section-main');
+  showBlockSection('popular-section-main');
+
 };
