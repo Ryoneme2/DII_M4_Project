@@ -1,5 +1,5 @@
-const createCardElement = (card) => {
-  const recommendSection = document.querySelector("#recommend-section");
+const createCardElement = (card, selector) => {
+  const recommendSection = document.querySelector(`#${selector}`);
 
   const sectionCard = document.createElement("section");
   sectionCard.classList.add("flex-shrink-0", "rounded", "h-auto", "w-[15rem]");
@@ -17,7 +17,7 @@ const createCardElement = (card) => {
   );
   cardElem.setAttribute(
     "style",
-    `background-image: url(${card.entry[0].images.jpg.image_url})`
+    `background-image: url(${card.image})`
   );
   const spanStar = document.createElement("span");
   spanStar.classList.add(
@@ -78,7 +78,7 @@ const createCardElement = (card) => {
   );
   const cardBg = document.createElement("div");
   cardBg.classList.add("absolute", "bottom-4");
-  cardBg.innerHTML = `<h5 class="text-2xl font-bold">${card.entry[0].title}</h5>`;
+  cardBg.innerHTML = `<h5 class="text-2xl font-bold">${card.title}</h5>`;
 
   cardDetail.appendChild(cardBg);
 
@@ -100,8 +100,23 @@ window.onload = async () => {
   const { data, pagination } = await fetchData(
     `https://api.jikan.moe/v4/recommendations/anime`
   );
-  console.log(data.slice(1, 16));
+  const popular = await fetchData(
+    `https://api.jikan.moe/v4/top/anime`
+  );
+  const popularList = popular.data;
+  console.log(popularList);
   data.slice(1, 16).forEach((card) => {
-    createCardElement(card);
+    const cardInfo = {
+      image: card.entry[0].images.jpg.image_url,
+      title : card.entry[0].title
+    }
+    createCardElement(cardInfo, 'recommend-section');
+  });
+  popularList.slice(1, 16).forEach((card) => {
+    const cardInfo = {
+      image: card.images.jpg.image_url,
+      title : card.title
+    }
+    createCardElement(cardInfo , 'popular-section');
   });
 };
