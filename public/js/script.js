@@ -1,8 +1,40 @@
-const createCardElement = (card, selector) => {
-  const recommendSection = document.querySelector(`#${selector}`);
+const searchBtn = document.querySelector('#search-button')
 
-  const sectionCard = document.createElement("section");
-  sectionCard.classList.add("flex-shrink-0", "rounded", "h-auto", "md:w-[15rem]" , "w-[10rem]");
+searchBtn.addEventListener('click', async (e) => {
+  const searchInput = document.querySelector('#searchInput').value;
+  const searchSection = document.querySelector(`#search-section`);
+
+  searchSection.innerHTML = '';
+
+  hideSection('recommend-section-main');
+  hideSection('popular-section-main');
+  showFlexSection('loading')
+
+  const { data, pagination } = await fetchData(`https://api.jikan.moe/v4/anime?q=${searchInput}&sfw`)
+  console.log(data);
+
+  if(!data) {
+    throw new Error('No data found')
+  }
+
+  if(data.length === 0) {
+    throw new Error('No data found (data len = 0)')
+  }
+
+  data.forEach((item) => {
+    const cardInfo = {
+      title: item.title,
+      image: item.images.jpg.image_url,
+    }
+
+    searchSection.appendChild(cardElem(cardInfo));
+  })
+
+  hideSection('loading');
+
+})
+
+const cardElem = (card) => {
   const cardElem = document.createElement("a");
   cardElem.href = ''
   cardElem.classList.add(
@@ -63,7 +95,7 @@ const createCardElement = (card, selector) => {
     "text-xs",
     "font-semibold",
     "text-white",
-    "bg-black",
+    "bg-gray-100",
     "rounded-full",
     "right-4",
     "top-4"
@@ -75,8 +107,10 @@ const createCardElement = (card, selector) => {
     "p-3",
     "md:p-6",
     "pt-40",
-    "text-orange-700",
+    "text-orange-600",
     "white-gradient",
+    "transition",
+    "hover:opacity-60",
     "h-[12rem]",
     "md:h-[20rem]",
     "w-full",
@@ -91,7 +125,17 @@ const createCardElement = (card, selector) => {
   // cardElem.appendChild(spanStar);
   cardElem.appendChild(spanHeart);
   cardElem.appendChild(cardDetail);
-  sectionCard.appendChild(cardElem);
+  return cardElem;
+}
+
+const createCardElement = (card, selector) => {
+  const recommendSection = document.querySelector(`#${selector}`);
+  
+  const sectionCard = document.createElement("section");
+  sectionCard.classList.add("flex-shrink-0", "rounded", "h-auto", "md:w-[15rem]" , "w-[10rem]");
+  
+  sectionCard.appendChild(cardElem(card));
+  
   recommendSection.appendChild(sectionCard);
 };
 
@@ -128,9 +172,10 @@ window.onload = async () => {
     `https://api.jikan.moe/v4/top/anime`
   );
   dataRecommend.slice(1, 16).forEach((card) => {
+    const randomNum0to1 = Math.floor(Math.random()*2);
     const cardInfo = {
-      image: card.entry[0].images.jpg.image_url,
-      title : card.entry[0].title
+      image: card.entry[randomNum0to1].images.jpg.image_url,
+      title : card.entry[randomNum0to1].title
     }
     createCardElement(cardInfo, 'recommend-section');
   });
