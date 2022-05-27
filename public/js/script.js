@@ -2,40 +2,65 @@ const searchBtn = document.querySelector("#search-button");
 const nextPageSearch = document.querySelector("#nextPageSearch");
 const prevPageSearch = document.querySelector("#prevPageSearch");
 var searchPage = 1;
+var maxPage
 
-searchBtn.addEventListener("click", async (e) => {
-  const searchInput = document.querySelector("#searchInput").value;
+var tempLink = "";
+
+
+const onClickNextPage = async () => {
+  console.log({searchPage});
+
+  searchPage = parseInt(searchPage) + 1;
+  console.log(searchPage);
+  if(parseInt(searchPage) >= parseInt(maxPage)) {
+    searchPage = maxPage
+  }
+  console.log(`${tempLink}&page=${searchPage}`);
+  const data = await fetchData(`${tempLink}&page=${searchPage}`);
+  console.log(data);
+
+  searchOnLoad(data)
+
+  hideSection("loading");
+};
+
+const onClickPrevPage = async () => {
+  searchPage = parseInt(searchPage) - 1;
+  if(parseInt(searchPage) <= 1) {
+    searchPage = 1
+  }
+  const data = await fetchData(`${tempLink}&page=${searchPage}`);
+
+  searchOnLoad(data)
+
+  hideSection("loading");
+};
+
+const searchOnLoad = (data) => {
   const searchSection = document.querySelector(`#search-section`);
-  const searchTitle = document.querySelector(`#SeachTitle`);
   const paginationElem = document.querySelector(`#pagination`);
+
   searchSection.innerHTML = "";
 
-  hideSection("recommend-section-main");
-  hideSection("popular-section-main");
-  showFlexSection("loading");
-
-  const { data, pagination } = await fetchData(
-    `https://api.jikan.moe/v4/anime?q=${searchInput}&sfw&page=${searchPage}`
-  );
-  console.log(data);
   paginationElem.innerHTML = `
-  ${pagination.current_page}
+  ${data.pagination.current_page}
   <span class="mx-0.25">/</span>
-  ${pagination.last_visible_page}
+  ${data.pagination.last_visible_page}
   `;
 
-  searchPage = pagination.current_page;
+  searchPage = data.pagination.current_page;
+  maxPage = data.pagination.last_visible_page;
 
-  if (!data) {
+  if (!data.data) {
     throw new Error("No data found");
   }
 
-  if (data.length === 0) {
+  if (data.data.length === 0) {
     searchSection.innerHTML = "<b> No Data </b>";
     hideSection("pagination");
   }
 
-  data.forEach((item) => {
+  data.data.forEach((item) => {
     const cardInfo = {
       title: item.title,
       image: item.images.jpg.image_url,
@@ -43,8 +68,31 @@ searchBtn.addEventListener("click", async (e) => {
 
     searchSection.appendChild(cardElem(cardInfo));
   });
+  showBlockSection("search-section-main");
+};
 
-  hideSection("loading");
+nextPageSearch.addEventListener("click", async () => {
+  await onClickNextPage()
+
+});
+prevPageSearch.addEventListener("click", async () => {
+  await onClickPrevPage()
+});
+
+searchBtn.addEventListener("click", async (e) => {
+  const searchInput = document.querySelector("#searchInput").value;
+  const searchTitle = document.querySelector(`#SeachTitle`);
+
+  tempLink = `https://api.jikan.moe/v4/anime?q=${searchInput}&sfw`;
+
+  const data = await fetchData(
+    `https://api.jikan.moe/v4/anime?q=${searchInput}&sfw`
+  );
+  
+  searchOnLoad(data);
+
+  console.log(data);
+  
   showBlockSection("search-section-main");
   searchTitle.innerHTML = `<span class="font-semibold">Result for <span class="uppercase text-orange-500 text-[1.4rem]">"${searchInput}"</span></span>`;
 });
@@ -131,8 +179,15 @@ const createCardElement = (card, selector) => {
 };
 
 const fetchData = async (link) => {
+  hideSection("recommend-section-main");
+  hideSection("popular-section-main");
+  hideSection("search-section-main");
+  showFlexSection("loading");
+
   const response = await fetch(link);
   const data = await response.json();
+
+  hideSection("loading");
   return data;
 };
 
@@ -152,10 +207,6 @@ const hideSection = (selector) => {
 };
 
 window.onload = async () => {
-  hideSection("recommend-section-main");
-  hideSection("popular-section-main");
-  hideSection("search-section-main");
-  showFlexSection("loading");
   const { data: dataRecommend } = await fetchData(
     `https://api.jikan.moe/v4/recommendations/anime`
   );
@@ -177,7 +228,6 @@ window.onload = async () => {
     };
     createCardElement(cardInfo, "popular-section");
   });
-  hideSection("loading");
   showBlockSection("recommend-section-main");
   showBlockSection("popular-section-main");
 };
