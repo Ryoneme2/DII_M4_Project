@@ -1,7 +1,9 @@
 body {
   background-color: rgb(245, 245, 245) !important;
 }
-
+.bg-main-white {
+  background-color: rgb(245, 245, 245);
+}
 .bg-main-red {
   background-color: #ff4e00;
 }
@@ -26,4 +28,35 @@ body {
 
 input:focus {
   outline-color: #ff7539;
+}
+
+
+#SeachTitle {
+  padding: 0.3em 0.8em;
+  display: inline-block;
+  position:relative;
+}
+
+#SeachTitle::before,
+#SeachTitle::after {
+  content: " ";
+  width: 100vw; /*big value here*/
+  height: 1px;
+  position: absolute;
+  top: 50%;
+  background:#ff7539;
+}
+
+#SeachTitle::after {
+  left: calc(100% + 30px); /*40px offset from the title*/
+}
+#SeachTitle::before {
+  right: calc(100% + 30px);
+}
+
+@media (max-width: 384px) {
+  #SeachTitle::before,
+  #SeachTitle::after {
+    display: none;
+  }
 }

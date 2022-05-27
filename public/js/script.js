@@ -1,43 +1,57 @@
-const searchBtn = document.querySelector('#search-button')
+const searchBtn = document.querySelector("#search-button");
+const nextPageSearch = document.querySelector("#nextPageSearch");
+const prevPageSearch = document.querySelector("#prevPageSearch");
 var searchPage = 1;
 
-searchBtn.addEventListener('click', async (e) => {
-  const searchInput = document.querySelector('#searchInput').value;
+searchBtn.addEventListener("click", async (e) => {
+  const searchInput = document.querySelector("#searchInput").value;
   const searchSection = document.querySelector(`#search-section`);
+  const searchTitle = document.querySelector(`#SeachTitle`);
+  const paginationElem = document.querySelector(`#pagination`);
+  searchSection.innerHTML = "";
 
-  searchSection.innerHTML = '';
+  hideSection("recommend-section-main");
+  hideSection("popular-section-main");
+  showFlexSection("loading");
 
-  hideSection('recommend-section-main');
-  hideSection('popular-section-main');
-  showFlexSection('loading')
-
-  const { data, pagination } = await fetchData(`https://api.jikan.moe/v4/anime?q=${searchInput}&sfw`)
+  const { data, pagination } = await fetchData(
+    `https://api.jikan.moe/v4/anime?q=${searchInput}&sfw&page=${searchPage}`
+  );
   console.log(data);
+  paginationElem.innerHTML = `
+  ${pagination.current_page}
+  <span class="mx-0.25">/</span>
+  ${pagination.last_visible_page}
+  `;
 
-  if(!data) {
-    throw new Error('No data found')
+  searchPage = pagination.current_page;
+
+  if (!data) {
+    throw new Error("No data found");
   }
 
-  if(data.length === 0) {
-    throw new Error('No data found (data len = 0)')
+  if (data.length === 0) {
+    searchSection.innerHTML = "<b> No Data </b>";
+    hideSection("pagination");
   }
 
   data.forEach((item) => {
     const cardInfo = {
       title: item.title,
       image: item.images.jpg.image_url,
-    }
+    };
 
     searchSection.appendChild(cardElem(cardInfo));
-  })
+  });
 
-  hideSection('loading');
-
-})
+  hideSection("loading");
+  showBlockSection("search-section-main");
+  searchTitle.innerHTML = `<span class="font-semibold">Result for <span class="uppercase text-orange-500 text-[1.4rem]">"${searchInput}"</span></span>`;
+});
 
 const cardElem = (card) => {
   const cardElem = document.createElement("a");
-  cardElem.href = ''
+  cardElem.href = "";
   cardElem.classList.add(
     "relative",
     "block",
@@ -49,12 +63,9 @@ const cardElem = (card) => {
     "h-[12rem]",
     "w-[9rem]",
     "md:h-[20rem]",
-    "md:w-[15rem]",
+    "md:w-[15rem]"
   );
-  cardElem.setAttribute(
-    "style",
-    `background-image: url(${card.image})`
-  );
+  cardElem.setAttribute("style", `background-image: url(${card.image})`);
   const spanHeart = document.createElement("span");
   spanHeart.classList.add(
     "absolute",
@@ -63,7 +74,7 @@ const cardElem = (card) => {
     "w-10",
     "h-10",
     "items-center",
-    'justify-center',
+    "justify-center",
     "px-3,",
     "py-1",
     "text-xs",
@@ -100,16 +111,22 @@ const cardElem = (card) => {
   cardElem.appendChild(spanHeart);
   cardElem.appendChild(cardDetail);
   return cardElem;
-}
+};
 
 const createCardElement = (card, selector) => {
   const recommendSection = document.querySelector(`#${selector}`);
-  
+
   const sectionCard = document.createElement("section");
-  sectionCard.classList.add("flex-shrink-0", "rounded", "h-auto", "md:w-[15rem]" , "w-[10rem]");
-  
+  sectionCard.classList.add(
+    "flex-shrink-0",
+    "rounded",
+    "h-auto",
+    "md:w-[15rem]",
+    "w-[10rem]"
+  );
+
   sectionCard.appendChild(cardElem(card));
-  
+
   recommendSection.appendChild(sectionCard);
 };
 
@@ -122,46 +139,45 @@ const fetchData = async (link) => {
 const showFlexSection = (selector) => {
   const recommendSection = document.querySelector(`#${selector}`);
   recommendSection.style.display = "flex";
-}
+};
 
 const showBlockSection = (selector) => {
   const recommendSection = document.querySelector(`#${selector}`);
   recommendSection.style.display = "block";
-}
+};
 
 const hideSection = (selector) => {
   const recommendSection = document.querySelector(`#${selector}`);
   recommendSection.style.display = "none";
-}
-
+};
 
 window.onload = async () => {
-  hideSection('recommend-section-main');
-  hideSection('popular-section-main');
-  showFlexSection('loading');
-  const { data : dataRecommend } = await fetchData(
+  hideSection("recommend-section-main");
+  hideSection("popular-section-main");
+  hideSection("search-section-main");
+  showFlexSection("loading");
+  const { data: dataRecommend } = await fetchData(
     `https://api.jikan.moe/v4/recommendations/anime`
   );
-  const { data : dataPopular } = await fetchData(
+  const { data: dataPopular } = await fetchData(
     `https://api.jikan.moe/v4/top/anime`
   );
   dataRecommend.slice(1, 16).forEach((card) => {
-    const randomNum0to1 = Math.floor(Math.random()*2);
+    const randomNum0to1 = Math.floor(Math.random() * 2);
     const cardInfo = {
       image: card.entry[randomNum0to1].images.jpg.image_url,
-      title : card.entry[randomNum0to1].title
-    }
-    createCardElement(cardInfo, 'recommend-section');
+      title: card.entry[randomNum0to1].title,
+    };
+    createCardElement(cardInfo, "recommend-section");
   });
   dataPopular.slice(1, 16).forEach((card) => {
     const cardInfo = {
       image: card.images.jpg.image_url,
-      title : card.title
-    }
-    createCardElement(cardInfo , 'popular-section');
+      title: card.title,
+    };
+    createCardElement(cardInfo, "popular-section");
   });
-  hideSection('loading');
-  showBlockSection('recommend-section-main');
-  showBlockSection('popular-section-main');
-
+  hideSection("loading");
+  showBlockSection("recommend-section-main");
+  showBlockSection("popular-section-main");
 };
