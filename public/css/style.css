@@ -30,11 +30,10 @@ input:focus {
   outline-color: #ff7539;
 }
 
-
 #SeachTitle {
   padding: 0.3em 0.8em;
   display: inline-block;
-  position:relative;
+  position: relative;
 }
 
 #SeachTitle::before,
@@ -44,7 +43,7 @@ input:focus {
   height: 1px;
   position: absolute;
   top: 50%;
-  background:#ff7539;
+  background: #ff7539;
 }
 
 #SeachTitle::after {
@@ -59,4 +58,23 @@ input:focus {
   #SeachTitle::after {
     display: none;
   }
+}
+
+.grassmo {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 20px 20px 40px -6px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4.5px);
+  -webkit-backdrop-filter: blur(5.5px);
+  border-radius: 10px;
+  border: 0.5px solid #ffffff;
+}
+
+.grassmo2 {
+  background: linear-gradient(
+    152.97deg,
+    rgba(21, 21, 21, 0.2) 0%,
+    rgba(21, 21, 21, 0) 100%
+  );
+  backdrop-filter: blur(42px);
+  border-radius: 16px;
 }
