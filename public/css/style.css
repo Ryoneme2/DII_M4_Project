@@ -61,19 +61,20 @@ input:focus {
 }
 
 .grassmo {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.51);
   box-shadow: 20px 20px 40px -6px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(4.5px);
+  backdrop-filter: blur(20px);
+  /* backdrop-filter: blur(4.5px); */
   -webkit-backdrop-filter: blur(5.5px);
   border-radius: 10px;
-  border: 0.5px solid #ffffff;
+  border: 0.3px solid #ffffff;
 }
 
 .grassmo2 {
   background: linear-gradient(
     152.97deg,
-    rgba(21, 21, 21, 0.2) 0%,
-    rgba(21, 21, 21, 0) 100%
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(222, 222, 222, 0) 100%
   );
   backdrop-filter: blur(42px);
   border-radius: 16px;
