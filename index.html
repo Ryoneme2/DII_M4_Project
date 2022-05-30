@@ -182,27 +182,216 @@
       <div
         class="w-[100vw] h-[100vh] bg-gray-600 opacity-50 top-0 z-[99] fixed"
       ></div>
-
-      <div class="w-[100vw] h-[100vh] flex justify-center items-center z-[100] fixed top-0">
-        <div class="w-[90vw] h-[90vh] grassmo top-0 z-[101] p-4 overflow-auto">
+      <div class="z-[102] absolute top-2 right-2">
+        <span class="text-2xl cursor-pointer">&#10005;</span>
+      </div>
+      <div
+        class="w-[100vw] h-[100vh] flex justify-center items-end z-[100] fixed top-0"
+      >
+        <div class="w-[100vw] h-[95vh] grassmo top-0 z-[101] p-4 overflow-auto">
           <div class="container mx-auto">
-            <div class="flex flex-col justify-center item-center">
-              <div class="flex justify-center items-center">
-                <div>
-                  <!-- TODO : image -->
+            <div class="flex flex-col justify-center item-center mt-4">
+              <div class="flex justify-center items-start">
+                <!-- <div class="flex justify-center w-auto"> -->
+                <!-- TODO : image -->
+                <div class="w-[30rem]">
+                  <img
+                    class="w-auto h-[33rem]"
+                    src="https://cdn.myanimelist.net/images/anime/4/19644l.jpg"
+                  />
                 </div>
+                <!-- </div> -->
                 <div>
                   <!-- TODO : CONTENT Info -->
+                  <h2 class="text-[3rem] font-normal">Name</h2>
+                  <strong
+                    class="border border-yellow-500 text-yellow-500 bg-yellow-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide"
+                  >
+                    Anime
+                  </strong>
                 </div>
               </div>
-              <div class="flex justify-center">
-                <!-- TODO : vid trailer -->
+              <div class="flex flex-col items-center justify-center mt-10">
+                <div>
+                  <h3 class="my-4 text-2xl font-semibold">-- Trailer --</h3>
+                </div>
+                <div>
+                  <iframe
+                    class="aspect-video w-[45rem]"
+                    src="https://www.youtube.com/embed/nLIyn8PvKuE"
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                  ></iframe>
+                </div>
               </div>
-              <div>
+              <div class="mt-10">
                 <!-- TODO : description -->
+                <div>
+                  <h3 class="my-4 text-center text-2xl font-semibold">
+                    -- Synopsis --
+                  </h3>
+                </div>
+                <div>
+                  <p class="text-gray-700 indent-6">
+                    Crime is timeless. By the year 2071, humanity has expanded
+                    across the galaxy, filling the surface of other planets with
+                    settlements like those on Earth. These new societies are
+                    plagued by murder, drug use, and theft, and intergalactic
+                    outlaws are hunted by a growing number of tough bounty
+                    hunters. Spike Spiegel and Jet Black pursue criminals
+                    throughout space
+                  </p>
+                </div>
               </div>
-              <div class="flex justify-around items-center">
-                <!-- TODO : relate items -->
+              <div class="flex flex-col items-center justify-around items-center mt-10">
+                <div>
+                  <h3 class="my-4 text-center text-2xl font-semibold">
+                    -- Relations --
+                  </h3>
+                </div>
+                <div class="grid gap-6 grid-cols-3">
+                  <!-- TODO : relate items -->
+                  <section class="flex-shrink-0 rounded h-auto w-[15rem]">
+                    <a
+                      href=""
+                      class="relative block overflow-hidden bg-center bg-no-repeat bg-cover rounded-xl h-[20rem]"
+                      style="
+                        background-image: url(https://www.hyperui.dev/photos/beach-1.jpeg);
+                      "
+                    >
+                      <span
+                        class="absolute z-10 inline-flex items-center px-3 py-1 text-xs font-semibold text-white bg-black rounded-full left-4 top-4"
+                      >
+                        4.5
+
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-4 w-4 ml-1.5 text-yellow-300"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                          />
+                        </svg>
+                      </span>
+
+                      <span
+                        class="absolute z-10 w-10 h-10 inline-flex items-center justify-center text-xs font-semibold text-white bg-white rounded-full right-4 top-4"
+                      >
+                        <img
+                          class="w-6 h-6"
+                          src="./public/image/icons8-heart-60.png"
+                          alt=""
+                        />
+                      </span>
+
+                      <div
+                        class="relative p-6 pt-40 text-orange-700 white-gradient h-[20rem] bg-opacity-40"
+                      >
+                        <div class="absolute bottom-4">
+                          <h5 class="text-2xl font-bold">
+                            Anime or Manga name
+                          </h5>
+                        </div>
+                      </div>
+                    </a>
+                  </section>
+                  <section class="flex-shrink-0 rounded h-auto w-[15rem]">
+                    <a
+                      href=""
+                      class="relative block overflow-hidden bg-center bg-no-repeat bg-cover rounded-xl h-[20rem]"
+                      style="
+                        background-image: url(https://www.hyperui.dev/photos/beach-1.jpeg);
+                      "
+                    >
+                      <span
+                        class="absolute z-10 inline-flex items-center px-3 py-1 text-xs font-semibold text-white bg-black rounded-full left-4 top-4"
+                      >
+                        4.5
+
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-4 w-4 ml-1.5 text-yellow-300"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                          />
+                        </svg>
+                      </span>
+
+                      <span
+                        class="absolute z-10 w-10 h-10 inline-flex items-center justify-center text-xs font-semibold text-white bg-white rounded-full right-4 top-4"
+                      >
+                        <img
+                          class="w-6 h-6"
+                          src="./public/image/icons8-heart-60.png"
+                          alt=""
+                        />
+                      </span>
+
+                      <div
+                        class="relative p-6 pt-40 text-orange-700 white-gradient h-[20rem] bg-opacity-40"
+                      >
+                        <div class="absolute bottom-4">
+                          <h5 class="text-2xl font-bold">
+                            Anime or Manga name
+                          </h5>
+                        </div>
+                      </div>
+                    </a>
+                  </section>
+                  <section class="flex-shrink-0 rounded h-auto w-[15rem]">
+                    <a
+                      href=""
+                      class="relative block overflow-hidden bg-center bg-no-repeat bg-cover rounded-xl h-[20rem]"
+                      style="
+                        background-image: url(https://www.hyperui.dev/photos/beach-1.jpeg);
+                      "
+                    >
+                      <span
+                        class="absolute z-10 inline-flex items-center px-3 py-1 text-xs font-semibold text-white bg-black rounded-full left-4 top-4"
+                      >
+                        4.5
+
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-4 w-4 ml-1.5 text-yellow-300"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                          />
+                        </svg>
+                      </span>
+
+                      <span
+                        class="absolute z-10 w-10 h-10 inline-flex items-center justify-center text-xs font-semibold text-white bg-white rounded-full right-4 top-4"
+                      >
+                        <img
+                          class="w-6 h-6"
+                          src="./public/image/icons8-heart-60.png"
+                          alt=""
+                        />
+                      </span>
+
+                      <div
+                        class="relative p-6 pt-40 text-orange-700 white-gradient h-[20rem] bg-opacity-40"
+                      >
+                        <div class="absolute bottom-4">
+                          <h5 class="text-2xl font-bold">
+                            Anime or Manga name
+                          </h5>
+                        </div>
+                      </div>
+                    </a>
+                  </section>s
+                </div>
               </div>
             </div>
           </div>
