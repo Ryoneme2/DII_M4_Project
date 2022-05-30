@@ -181,18 +181,24 @@
 
       <div
         class="w-[100vw] h-[100vh] bg-gray-600 opacity-50 top-0 z-[99] fixed"
+        id="modal-bg"
       ></div>
-      <div class="z-[102] absolute top-2 right-2">
+      <div class="z-[102] absolute top-2 right-2" id="modal-close">
         <span class="text-2xl cursor-pointer">&#10005;</span>
       </div>
       <div
         class="w-[100vw] h-[100vh] flex justify-center items-end z-[100] fixed top-0"
+        id="modal-detail"
       >
         <div class="w-[100vw] h-[95vh] grassmo top-0 z-[101] p-4 overflow-auto">
           <div class="container mx-auto">
-            <div class="flex flex-col justify-center item-center mt-4">
+            <div id="loading-modal" class="flex justify-center my-10 animate-spin">
+              <img
+                src="https://img.icons8.com/external-tanah-basah-detailed-outline-tanah-basah/96/000000/external-loading-user-interface-tanah-basah-detailed-outline-tanah-basah.png"
+              />
+            </div>
+            <div class="flex flex-col justify-center item-center mt-4" id="modal-content">
               <div class="flex justify-center items-start">
-                <!-- <div class="flex justify-center w-auto"> -->
                 <!-- TODO : image -->
                 <div class="w-[30rem]">
                   <img
@@ -200,7 +206,6 @@
                     src="https://cdn.myanimelist.net/images/anime/4/19644l.jpg"
                   />
                 </div>
-                <!-- </div> -->
                 <div>
                   <!-- TODO : CONTENT Info -->
                   <h2 class="text-[3rem] font-normal">Name</h2>
@@ -390,7 +395,7 @@
                         </div>
                       </div>
                     </a>
-                  </section>s
+                  </section>
                 </div>
               </div>
             </div>

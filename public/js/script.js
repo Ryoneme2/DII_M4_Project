@@ -2,36 +2,40 @@ const searchBtn = document.querySelector("#search-button");
 const nextPageSearch = document.querySelector("#nextPageSearch");
 const prevPageSearch = document.querySelector("#prevPageSearch");
 var searchPage = 1;
-var maxPage
+var maxPage;
+
+// const modalBG = document.querySelector("#modal-bg");
+// const modalCloseBtn = document.querySelector("#modal-close");
+// const modalDetail = document.querySelector("#modal-detail");
+
 
 var tempLink = "";
 
-
 const onClickNextPage = async () => {
-  console.log({searchPage});
+  console.log({ searchPage });
 
   searchPage = parseInt(searchPage) + 1;
   console.log(searchPage);
-  if(parseInt(searchPage) >= parseInt(maxPage)) {
-    searchPage = maxPage
+  if (parseInt(searchPage) >= parseInt(maxPage)) {
+    searchPage = maxPage;
   }
   console.log(`${tempLink}&page=${searchPage}`);
   const data = await fetchData(`${tempLink}&page=${searchPage}`);
   console.log(data);
 
-  searchOnLoad(data)
+  searchOnLoad(data);
 
   hideSection("loading");
 };
 
 const onClickPrevPage = async () => {
   searchPage = parseInt(searchPage) - 1;
-  if(parseInt(searchPage) <= 1) {
-    searchPage = 1
+  if (parseInt(searchPage) <= 1) {
+    searchPage = 1;
   }
   const data = await fetchData(`${tempLink}&page=${searchPage}`);
 
-  searchOnLoad(data)
+  searchOnLoad(data);
 
   hideSection("loading");
 };
@@ -72,11 +76,10 @@ const searchOnLoad = (data) => {
 };
 
 nextPageSearch.addEventListener("click", async () => {
-  await onClickNextPage()
-
+  await onClickNextPage();
 });
 prevPageSearch.addEventListener("click", async () => {
-  await onClickPrevPage()
+  await onClickPrevPage();
 });
 
 searchBtn.addEventListener("click", async (e) => {
@@ -88,18 +91,20 @@ searchBtn.addEventListener("click", async (e) => {
   const data = await fetchData(
     `https://api.jikan.moe/v4/anime?q=${searchInput}&sfw`
   );
-  
+
   searchOnLoad(data);
 
   console.log(data);
-  
+
   showBlockSection("search-section-main");
   searchTitle.innerHTML = `<span class="font-semibold">Result for <span class="uppercase text-orange-500 text-[1.4rem]">"${searchInput}"</span></span>`;
 });
 
 const cardElem = (card) => {
+  console.log(card);
   const cardElem = document.createElement("a");
   cardElem.href = "";
+  cardElem.setAttribute("onclick", `createModalContent(${card.id})`)
   cardElem.classList.add(
     "relative",
     "block",
@@ -216,6 +221,7 @@ window.onload = async () => {
   dataRecommend.slice(1, 16).forEach((card) => {
     const randomNum0to1 = Math.floor(Math.random() * 2);
     const cardInfo = {
+      id: card.entry[randomNum0to1].mal_id,
       image: card.entry[randomNum0to1].images.jpg.image_url,
       title: card.entry[randomNum0to1].title,
     };
@@ -223,6 +229,7 @@ window.onload = async () => {
   });
   dataPopular.slice(1, 16).forEach((card) => {
     const cardInfo = {
+      id: card.mal_id,
       image: card.images.jpg.image_url,
       title: card.title,
     };
@@ -230,4 +237,69 @@ window.onload = async () => {
   });
   showBlockSection("recommend-section-main");
   showBlockSection("popular-section-main");
+};
+
+const createModalContent = (id) => {
+
+  showBlockSection("modal-bg");
+  showBlockSection("modal-detail");
+  showBlockSection("modal-close");
+  showFlexSection("loading-modal")
+
+  function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+  
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+  
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+  
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  
+    return array;
+  }
+
+  const dataFullDetail = fetchData(`https://api.jikan.moe/v4/anime/${id}/full`);
+
+  const dataDetail  = {
+    title: dataFullDetail.data.title,
+    linkUrl : dataFullDetail.data.url,
+    image : dataFullDetail.data.images.jpg.large_image_url,
+    trailerLink : dataFullDetail.data.trailer.url,
+    trailerLinkEmbed : dataFullDetail.data.trailer.embed_url,
+    score : dataFullDetail.data.score,
+    synopsis : dataFullDetail.data.synopsis,
+    genres : dataFullDetail.data.genres, // array
+    relations : shuffle(
+      dataFullDetail.data.relations.map((elem) => {
+        return elem.entry.map((item) => {
+          return item.mal_id
+        })
+      })
+    ), // array
+  }
+
+  const infoContent = document.createElement("div");
+  infoContent.classList.add("flex", "justify-center", "items-start");
+  infoContent.innerHTML = `
+  <div class="w-[30rem]">
+    <img
+      class="w-auto h-[33rem]"
+      src="https://cdn.myanimelist.net/images/anime/4/19644l.jpg"
+    />
+  </div>
+  <div>
+    <!-- TODO : CONTENT Info -->
+    <h2 class="text-[3rem] font-normal">Name</h2>
+    <strong
+      class="border border-yellow-500 text-yellow-500 bg-yellow-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide"
+    >
+      Anime
+    </strong>
+  </div>`;
 };
