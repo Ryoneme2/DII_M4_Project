@@ -8,7 +8,6 @@ var maxPage;
 // const modalCloseBtn = document.querySelector("#modal-close");
 // const modalDetail = document.querySelector("#modal-detail");
 
-
 var tempLink = "";
 
 const onClickNextPage = async () => {
@@ -101,10 +100,10 @@ searchBtn.addEventListener("click", async (e) => {
 });
 
 const cardElem = (card) => {
-  console.log(card);
+  // console.log(card);
   const cardElem = document.createElement("a");
   cardElem.href = "";
-  cardElem.setAttribute("onclick", `createModalContent(${card.id})`)
+  cardElem.setAttribute("onclick", `createModalContent(${card.id})`);
   cardElem.classList.add(
     "relative",
     "block",
@@ -240,49 +239,60 @@ window.onload = async () => {
 };
 
 const createModalContent = (id) => {
-
   showBlockSection("modal-bg");
   showBlockSection("modal-detail");
   showBlockSection("modal-close");
-  showFlexSection("loading-modal")
+  showFlexSection("loading-modal");
 
   function shuffle(array) {
-    let currentIndex = array.length,  randomIndex;
-  
+    let currentIndex = array.length,
+      randomIndex;
+
     // While there remain elements to shuffle.
     while (currentIndex != 0) {
-  
       // Pick a remaining element.
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
-  
+
       // And swap it with the current element.
       [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
+        array[randomIndex],
+        array[currentIndex],
+      ];
     }
-  
+
     return array;
   }
 
   const dataFullDetail = fetchData(`https://api.jikan.moe/v4/anime/${id}/full`);
 
-  const dataDetail  = {
+  const dataDetail = {
     title: dataFullDetail.data.title,
-    linkUrl : dataFullDetail.data.url,
-    image : dataFullDetail.data.images.jpg.large_image_url,
-    trailerLink : dataFullDetail.data.trailer.url,
-    trailerLinkEmbed : dataFullDetail.data.trailer.embed_url,
-    score : dataFullDetail.data.score,
-    synopsis : dataFullDetail.data.synopsis,
-    genres : dataFullDetail.data.genres, // array
-    relations : shuffle(
-      dataFullDetail.data.relations.map((elem) => {
-        return elem.entry.map((item) => {
-          return item.mal_id
-        })
-      })
-    ), // array
-  }
+    linkUrl: dataFullDetail.data.url,
+    image: dataFullDetail.data.images.jpg.large_image_url,
+    trailerLink: dataFullDetail.data.trailer.url,
+    trailerLinkEmbed: dataFullDetail.data.trailer.embed_url,
+    score: dataFullDetail.data.score,
+    synopsis: dataFullDetail.data.synopsis,
+    genres: dataFullDetail.data.genres, // array
+    // relations : shuffle(
+    //   dataFullDetail.data.relations.map((elem) => {
+    //     return elem.entry.map((item) => {
+    //       return item.mal_id
+    //     })
+    //   })
+    // ), // array
+  };
+
+  const genreElement = dataDetail.genres.map((item) => {
+      const elem = document.createElement("strong");
+      elem.classList.add("border", "border-yellow-500", "text-yellow-500", "bg-yellow-100", "uppercase", "px-5", "py-1.5", "rounded-full", "text-[10px]", "tracking-wide", "mr-2",)
+      elem.innerHTML = item;
+
+      return elem;
+  });
+
+  console.log(dataDetail);
 
   const infoContent = document.createElement("div");
   infoContent.classList.add("flex", "justify-center", "items-start");
@@ -294,12 +304,34 @@ const createModalContent = (id) => {
     />
   </div>
   <div>
-    <!-- TODO : CONTENT Info -->
-    <h2 class="text-[3rem] font-normal">Name</h2>
-    <strong
-      class="border border-yellow-500 text-yellow-500 bg-yellow-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide"
+  <h2 class="text-[3rem] font-normal">Name</h2>
+  <strong
+    class="border border-yellow-500 text-yellow-500 bg-yellow-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide"
+  >
+    Anime
+  </strong>
+  <strong
+    class="border border-yellow-500 text-yellow-500 bg-yellow-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide mx-2"
+  >
+    ${dataDetail.score} / 10
+  </strong>
+  <h3 class="text-[1.5rem] font-normal mt-5">Genre</h3>
+  <div class="mt-2">
+    ${genreElement.join("")}
+  </div>
+  <div class="mt-5">
+    <button
+      onclick="addToFav(${id})"
+      class="inline-block p-[2px] rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-orange-600 hover:text-white active:text-opacity-75 focus:outline-none focus:ring transition"
     >
-      Anime
-    </strong>
-  </div>`;
+      <span
+        class="block px-8 py-3 text-sm font-medium bg-white rounded-full hover:bg-transparent"
+      >
+        Add to Favorite
+      </span>
+    </a>
+  </div>
+</div>`;
 };
+
+// createModalContent(1)

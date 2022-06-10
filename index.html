@@ -190,14 +190,22 @@
         class="w-[100vw] h-[100vh] flex justify-center items-end z-[100] fixed top-0"
         id="modal-detail"
       >
-        <div class="w-[100vw] h-[95vh] grassmo top-0 z-[101] p-4 overflow-auto">
+        <div
+          class="w-[100vw] h-[95vh] grassmo bottom-0 fixed z-[101] p-4 overflow-auto"
+        >
           <div class="container mx-auto">
-            <div id="loading-modal" class="flex justify-center my-10 animate-spin">
+            <div
+              id="loading-modal"
+              class="flex justify-center my-10 animate-spin"
+            >
               <img
                 src="https://img.icons8.com/external-tanah-basah-detailed-outline-tanah-basah/96/000000/external-loading-user-interface-tanah-basah-detailed-outline-tanah-basah.png"
               />
             </div>
-            <div class="flex flex-col justify-center item-center mt-4" id="modal-content">
+            <div
+              class="flex flex-col justify-center item-center mt-4"
+              id="modal-content"
+            >
               <div class="flex justify-center items-start">
                 <!-- TODO : image -->
                 <div class="w-[30rem]">
@@ -214,6 +222,31 @@
                   >
                     Anime
                   </strong>
+                  <strong
+                    class="border border-yellow-500 text-yellow-500 bg-yellow-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide mx-2"
+                  >
+                    Score / 10
+                  </strong>
+                  <h3 class="text-[1.5rem] font-normal mt-5">Genre</h3>
+                  <div class="mt-2">
+                    <strong
+                      class="border border-yellow-500 text-yellow-500 bg-yellow-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide mr-2"
+                    >
+                      Action
+                    </strong>
+                  </div>
+                  <div class="mt-5">
+                    <button
+                      onclick="addToFav(1)"
+                      class="inline-block p-[2px] rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-orange-600 hover:text-white active:text-opacity-75 focus:outline-none focus:ring transition"
+                    >
+                      <span
+                        class="block px-8 py-3 text-sm font-medium bg-white rounded-full hover:bg-transparent"
+                      >
+                        Add to Favorite
+                      </span>
+                    </a>
+                  </div>
                 </div>
               </div>
               <div class="flex flex-col items-center justify-center mt-10">
@@ -250,7 +283,9 @@
                   </p>
                 </div>
               </div>
-              <div class="flex flex-col items-center justify-around items-center mt-10">
+              <div
+                class="flex flex-col items-center justify-around items-center mt-10"
+              >
                 <div>
                   <h3 class="my-4 text-center text-2xl font-semibold">
                     -- Relations --
