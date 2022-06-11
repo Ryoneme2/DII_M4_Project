@@ -180,18 +180,19 @@
       <!-- ?Pop up Model Detail -->
 
       <div
-        class="w-[100vw] h-[100vh] bg-gray-600 opacity-50 top-0 z-[99] fixed"
+        class="w-[100vw] h-[100vh] bg-gray-600 opacity-50 top-0 z-[99] fixed hidden"
         id="modal-bg"
       ></div>
-      <div class="z-[102] absolute top-2 right-2" id="modal-close">
+      <div class="z-[102] absolute top-2 right-2 hidden" id="modal-close">
         <span class="text-2xl cursor-pointer">&#10005;</span>
       </div>
       <div
-        class="w-[100vw] h-[100vh] flex justify-center items-end z-[100] fixed top-0"
+        class="w-[100vw] h-[100vh] hidden justify-center items-end z-[100] fixed top-0"
         id="modal-detail"
       >
         <div
           class="w-[100vw] h-[95vh] grassmo bottom-0 fixed z-[101] p-4 overflow-auto"
+          id="modal-detailInner"
         >
           <div class="container mx-auto">
             <div

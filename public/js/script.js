@@ -101,7 +101,7 @@ searchBtn.addEventListener("click", async (e) => {
 
 const cardElem = (card) => {
   // console.log(card);
-  const cardElem = document.createElement("a");
+  const cardElem = document.createElement("div");
   cardElem.href = "";
   cardElem.setAttribute("onclick", `createModalContent(${card.id})`);
   cardElem.classList.add(
@@ -238,11 +238,17 @@ window.onload = async () => {
   showBlockSection("popular-section-main");
 };
 
-const createModalContent = (id) => {
+const createModalContent = async (id) => {
   showBlockSection("modal-bg");
   showBlockSection("modal-detail");
+  showBlockSection("modal-detailInner");
   showBlockSection("modal-close");
-  showFlexSection("loading-modal");
+
+  
+
+  const modalDetail = document.querySelector("#modal-detailInner");
+  const modalDetailOutter = document.querySelector("#modal-detail");
+  modalDetail.innerHTML = "";
 
   function shuffle(array) {
     let currentIndex = array.length,
@@ -264,35 +270,57 @@ const createModalContent = (id) => {
     return array;
   }
 
-  const dataFullDetail = fetchData(`https://api.jikan.moe/v4/anime/${id}/full`);
+  const dataFullDetail = await fetchData(
+    `https://api.jikan.moe/v4/anime/${id}/full`
+  );
 
   const dataDetail = {
     title: dataFullDetail.data.title,
     linkUrl: dataFullDetail.data.url,
     image: dataFullDetail.data.images.jpg.large_image_url,
+    youtube_id: dataFullDetail.data.trailer.youtube_id,
     trailerLink: dataFullDetail.data.trailer.url,
     trailerLinkEmbed: dataFullDetail.data.trailer.embed_url,
     score: dataFullDetail.data.score,
     synopsis: dataFullDetail.data.synopsis,
     genres: dataFullDetail.data.genres, // array
-    // relations : shuffle(
-    //   dataFullDetail.data.relations.map((elem) => {
-    //     return elem.entry.map((item) => {
-    //       return item.mal_id
-    //     })
-    //   })
-    // ), // array
+    relations : shuffle(
+      dataFullDetail.data.relations.map((elem) => {
+        return elem.entry.map((item) => {
+          return item.mal_id
+        })
+      })
+    ), // array
   };
+  console.log(dataDetail);
 
   const genreElement = dataDetail.genres.map((item) => {
-      const elem = document.createElement("strong");
-      elem.classList.add("border", "border-yellow-500", "text-yellow-500", "bg-yellow-100", "uppercase", "px-5", "py-1.5", "rounded-full", "text-[10px]", "tracking-wide", "mr-2",)
-      elem.innerHTML = item;
+    const elem = document.createElement("strong");
+    elem.classList.add(
+      "border",
+      "border-yellow-500",
+      "text-yellow-500",
+      "bg-yellow-100",
+      "uppercase",
+      "px-5",
+      "py-1.5",
+      "rounded-full",
+      "text-[10px]",
+      "tracking-wide",
+      "mr-2"
+    );
+    elem.innerHTML = item.name;
 
-      return elem;
+    console.log(elem);
+
+    return elem;
   });
 
-  console.log(dataDetail);
+  console.log(genreElement[0].outerHTML);
+
+  const loading = document.createElement("div");
+  const modalContainer = document.createElement("div");
+  modalContainer.classList.add("container", "mx-auto");
 
   const infoContent = document.createElement("div");
   infoContent.classList.add("flex", "justify-center", "items-start");
@@ -300,11 +328,11 @@ const createModalContent = (id) => {
   <div class="w-[30rem]">
     <img
       class="w-auto h-[33rem]"
-      src="https://cdn.myanimelist.net/images/anime/4/19644l.jpg"
+      src="${dataDetail.image}"
     />
   </div>
   <div>
-  <h2 class="text-[3rem] font-normal">Name</h2>
+  <h2 class="text-[3rem] font-normal">${dataDetail.title}</h2>
   <strong
     class="border border-yellow-500 text-yellow-500 bg-yellow-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide"
   >
@@ -317,11 +345,14 @@ const createModalContent = (id) => {
   </strong>
   <h3 class="text-[1.5rem] font-normal mt-5">Genre</h3>
   <div class="mt-2">
-    ${genreElement.join("")}
+    ${genreElement.map((item) => {
+      console.log(item.outerHTML);
+      return item.outerHTML;
+    })}
   </div>
   <div class="mt-5">
     <button
-      onclick="addToFav(${id})"
+      onclick="addToFav(${dataDetail.id})"
       class="inline-block p-[2px] rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-orange-600 hover:text-white active:text-opacity-75 focus:outline-none focus:ring transition"
     >
       <span
@@ -332,6 +363,52 @@ const createModalContent = (id) => {
     </a>
   </div>
 </div>`;
+
+  const vidContent = document.createElement("div");
+  vidContent.classList.add("flex", "justify-center", "items-start", "mt-10");
+  vidContent.innerHTML = `
+  <div>
+    <div>
+      <h3 class="my-4 text-2xl font-semibold">-- Trailer --</h3>
+    </div>
+    <div>
+      <iframe
+        class="aspect-video w-[45rem]"
+        src="https://www.youtube.com/embed/${dataDetail.youtube_id}"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+    </div>
+  `;
+
+  const synopsisContent = document.createElement("div");
+  synopsisContent.classList.add("mt-10");
+  synopsisContent.innerHTML = `
+  <div>
+    <h3 class="my-4 text-center text-2xl font-semibold">
+      -- Synopsis --
+    </h3>
+  </div>
+  <div>
+    <p class="text-gray-700 indent-6">
+      ${dataDetail.synopsis}
+    </p>
+  </div>
+  `;
+
+  modalContainer.appendChild(infoContent);
+  modalContainer.appendChild(vidContent);
+  modalContainer.appendChild(synopsisContent);
+  modalDetail.appendChild(modalContainer);
+  modalDetailOutter.appendChild(modalDetail);
+
+  // const relateContent = document.createElement("div");
+  // relateContent.classList.add("flex", "justify-center", "items-start","mt-10");
+
+  hideSection("loading-modal");
 };
 
 // createModalContent(1)
