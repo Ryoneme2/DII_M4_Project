@@ -6,6 +6,22 @@ var maxPage;
 
 var tempLink = "";
 
+const menuNav = Array.from(document.querySelectorAll(".menu-nav")).map(
+  (item) => {
+    item.addEventListener("click", async (e) => {
+      const title = item.innerHTML.trim().toLowerCase();
+      tempLink = `https://api.jikan.moe/v4/${title}?sfw`;
+      const data = await fetchData(tempLink);
+
+      searchOnLoad(data);
+
+      console.log(data);
+
+      showBlockSection("search-section-main");
+    });
+  }
+);
+
 const onClickNextPage = async () => {
   console.log({ searchPage });
 
@@ -60,9 +76,12 @@ const searchOnLoad = (data) => {
   }
 
   data.data.forEach((item) => {
+    console.log(item);
     const cardInfo = {
+      id: item.mal_id,
       title: item.title,
       image: item.images.jpg.image_url,
+      type: item.type,
     };
 
     searchSection.appendChild(cardElem(cardInfo));
@@ -96,9 +115,12 @@ searchBtn.addEventListener("click", async (e) => {
 });
 
 const cardElem = (card) => {
-  // console.log(card);
+  console.log(card.type);
   const cardElem = document.createElement("div");
-  cardElem.setAttribute("onclick", `createModalContent(${card.id})`);
+  cardElem.setAttribute(
+    "ondblclick",
+    `createModalContent(${card.id}, "${card.type}")`
+  );
   cardElem.classList.add(
     "relative",
     "block",
@@ -163,6 +185,7 @@ const cardElem = (card) => {
 
 const createCardElement = (card, selector) => {
   const recommendSection = document.querySelector(`#${selector}`);
+  console.log(card);
 
   const sectionCard = document.createElement("section");
   sectionCard.classList.add(
@@ -219,6 +242,7 @@ const fetchNewData = async (link) => {
       id: card.entry[randomNum0to1].mal_id,
       image: card.entry[randomNum0to1].images.webp.image_url,
       title: card.entry[randomNum0to1].title,
+      type: "Movie",
     };
     createCardElement(cardInfo, "recommend-section");
   });
@@ -227,6 +251,7 @@ const fetchNewData = async (link) => {
       id: card.mal_id,
       image: card.images.webp.image_url,
       title: card.title,
+      type: "Movie",
     };
     createCardElement(cardInfo, "popular-section");
   });
@@ -247,27 +272,24 @@ const closeModal = async () => {
   await fetchNewData();
 };
 
-const createModalContent = async (id) => {
+const createModalContent = async (id, type) => {
   showBlockSection("modal-bg");
   showBlockSection("modal-detail");
   showBlockSection("modal-detailInner");
   showBlockSection("modal-close");
 
   const modalDetail = document.querySelector("#modal-detailInner");
-  const modalDetailOutter = document.querySelector("#modal-detail");
+  const modalDetailOuter = document.querySelector("#modal-detail");
   modalDetail.innerHTML = "";
 
   function shuffle(array) {
     let currentIndex = array.length,
       randomIndex;
 
-    // While there remain elements to shuffle.
     while (currentIndex != 0) {
-      // Pick a remaining element.
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
 
-      // And swap it with the current element.
       [array[currentIndex], array[randomIndex]] = [
         array[randomIndex],
         array[currentIndex],
@@ -277,15 +299,35 @@ const createModalContent = async (id) => {
     return array;
   }
 
+  const enumAnimeType = ["TV", "OVA", "Movie", "Special", "ONA", "Music"];
+  const enumMangaType = [
+    "Manga",
+    "Novel",
+    "One-shot",
+    "Doujinshi",
+    "Manhua",
+    "Manhwa",
+    "OEL",
+  ];
+
+  let realType;
+
+  if (enumAnimeType.some((_type) => _type === type)) {
+    realType = "anime";
+  } else if (enumMangaType.some((_type) => _type === type)) {
+    realType = "manga";
+  }
+
+  console.log({ realType, type });
+
   const dataFullDetail = await fetchData(
-    `https://api.jikan.moe/v4/anime/${id}/full`
+    `https://api.jikan.moe/v4/${realType}/${id}/full`
   );
 
   const dataDetail = {
     title: dataFullDetail.data.title,
-    linkUrl: dataFullDetail.data.url,
+    // linkUrl: dataFullDetail.data.url,
     image: dataFullDetail.data.images.webp.large_image_url,
-    youtube_id: dataFullDetail.data.trailer.youtube_id,
     trailerLink: dataFullDetail.data.trailer.url,
     trailerLinkEmbed: dataFullDetail.data.trailer.embed_url,
     score: dataFullDetail.data.score,
@@ -325,12 +367,17 @@ const createModalContent = async (id) => {
 
   console.log(genreElement[0].outerHTML);
 
-  const loading = document.createElement("div");
   const modalContainer = document.createElement("div");
   modalContainer.classList.add("container", "mx-auto");
 
   const infoContent = document.createElement("div");
-  infoContent.classList.add("flex", "flex-col", "lg:flex-row", "justify-center", "items-start");
+  infoContent.classList.add(
+    "flex",
+    "flex-col",
+    "lg:flex-row",
+    "justify-center",
+    "items-start"
+  );
   infoContent.innerHTML = `
   <div class="w-[30rem]">
     <img
@@ -353,7 +400,6 @@ const createModalContent = async (id) => {
   <h3 class="text-[1.5rem] font-normal mt-5">Genre</h3>
   <div class="mt-2">
     ${genreElement.map((item) => {
-      console.log(item.outerHTML);
       return item.outerHTML;
     })}
   </div>
@@ -371,17 +417,19 @@ const createModalContent = async (id) => {
   </div>
 </div>`;
 
-  const vidContent = document.createElement("div");
-  vidContent.classList.add("flex", "justify-center", "items-start", "mt-10");
-  vidContent.innerHTML = `
-  <div>
+  if (realType === "anime") {
+    const ytID = dataFullDetail.data.trailer.youtube_id;
+    const vidContent = document.createElement("div");
+    vidContent.classList.add("flex", "justify-center", "items-start", "mt-10");
+    vidContent.innerHTML = `
+    <div>
     <div>
       <h3 class="my-4 text-2xl font-semibold">-- Trailer --</h3>
     </div>
     <div>
       <iframe
         class="aspect-video w-[45rem]"
-        src="https://www.youtube.com/embed/${dataDetail.youtube_id}"
+        src="https://www.youtube.com/embed/${ytID}"
         title="YouTube video player"
         frameborder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -390,6 +438,7 @@ const createModalContent = async (id) => {
     </div>
     </div>
   `;
+  }
 
   const synopsisContent = document.createElement("div");
   synopsisContent.classList.add("mt-10");
@@ -405,8 +454,6 @@ const createModalContent = async (id) => {
     </p>
   </div>
   `;
-
-  
 
   const relateContent = document.createElement("div");
   relateContent.classList.add(
@@ -430,29 +477,25 @@ const createModalContent = async (id) => {
       const data = await fetchData(
         `https://api.jikan.moe/v4/anime/${item}/full`
       );
-  
+
       console.log(data);
-  
+
       const validateData = {
         id: data.data.mal_id,
         title: data.data.title,
         image: data.data.images.jpg.image_url,
-      }
-  
+        type: data.data.type,
+      };
+
       relateGrid.appendChild(cardElem(validateData));
-    },1000)
-  })
+    }, 1000);
+  });
 
   relateContent.appendChild(relateGrid);
-
   modalContainer.appendChild(infoContent);
-  modalContainer.appendChild(vidContent);
+  // realType === "anime" ? modalContainer.appendChild(vidContent) : null;
   modalContainer.appendChild(synopsisContent);
   modalContainer.appendChild(relateContent);
   modalDetail.appendChild(modalContainer);
-  modalDetailOutter.appendChild(modalDetail);
-
-  // hideSection("loading-modal");
+  modalDetailOuter.appendChild(modalDetail);
 };
-
-// createModalContent(1)
