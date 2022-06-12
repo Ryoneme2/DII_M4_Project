@@ -4,10 +4,6 @@ const prevPageSearch = document.querySelector("#prevPageSearch");
 var searchPage = 1;
 var maxPage;
 
-// const modalBG = document.querySelector("#modal-bg");
-// const modalCloseBtn = document.querySelector("#modal-close");
-// const modalDetail = document.querySelector("#modal-detail");
-
 var tempLink = "";
 
 const onClickNextPage = async () => {
@@ -102,7 +98,6 @@ searchBtn.addEventListener("click", async (e) => {
 const cardElem = (card) => {
   // console.log(card);
   const cardElem = document.createElement("div");
-  cardElem.href = "";
   cardElem.setAttribute("onclick", `createModalContent(${card.id})`);
   cardElem.classList.add(
     "relative",
@@ -115,7 +110,8 @@ const cardElem = (card) => {
     "h-[12rem]",
     "w-[9rem]",
     "md:h-[20rem]",
-    "md:w-[15rem]"
+    "md:w-[15rem]",
+    "hover:cursor-pointer"
   );
   cardElem.setAttribute("style", `background-image: url(${card.image})`);
   const spanHeart = document.createElement("span");
@@ -210,7 +206,7 @@ const hideSection = (selector) => {
   recommendSection.style.display = "none";
 };
 
-window.onload = async () => {
+const fetchNewData = async (link) => {
   const { data: dataRecommend } = await fetchData(
     `https://api.jikan.moe/v4/recommendations/anime`
   );
@@ -221,7 +217,7 @@ window.onload = async () => {
     const randomNum0to1 = Math.floor(Math.random() * 2);
     const cardInfo = {
       id: card.entry[randomNum0to1].mal_id,
-      image: card.entry[randomNum0to1].images.jpg.image_url,
+      image: card.entry[randomNum0to1].images.webp.image_url,
       title: card.entry[randomNum0to1].title,
     };
     createCardElement(cardInfo, "recommend-section");
@@ -229,7 +225,7 @@ window.onload = async () => {
   dataPopular.slice(1, 16).forEach((card) => {
     const cardInfo = {
       id: card.mal_id,
-      image: card.images.jpg.image_url,
+      image: card.images.webp.image_url,
       title: card.title,
     };
     createCardElement(cardInfo, "popular-section");
@@ -238,13 +234,24 @@ window.onload = async () => {
   showBlockSection("popular-section-main");
 };
 
+window.onload = async () => {
+  await fetchNewData();
+};
+
+const closeModal = async () => {
+  hideSection("modal-bg");
+  hideSection("modal-detail");
+  hideSection("modal-detailInner");
+  hideSection("modal-close");
+
+  await fetchNewData();
+};
+
 const createModalContent = async (id) => {
   showBlockSection("modal-bg");
   showBlockSection("modal-detail");
   showBlockSection("modal-detailInner");
   showBlockSection("modal-close");
-
-  
 
   const modalDetail = document.querySelector("#modal-detailInner");
   const modalDetailOutter = document.querySelector("#modal-detail");
@@ -277,18 +284,18 @@ const createModalContent = async (id) => {
   const dataDetail = {
     title: dataFullDetail.data.title,
     linkUrl: dataFullDetail.data.url,
-    image: dataFullDetail.data.images.jpg.large_image_url,
+    image: dataFullDetail.data.images.webp.large_image_url,
     youtube_id: dataFullDetail.data.trailer.youtube_id,
     trailerLink: dataFullDetail.data.trailer.url,
     trailerLinkEmbed: dataFullDetail.data.trailer.embed_url,
     score: dataFullDetail.data.score,
     synopsis: dataFullDetail.data.synopsis,
     genres: dataFullDetail.data.genres, // array
-    relations : shuffle(
+    relations: shuffle(
       dataFullDetail.data.relations.map((elem) => {
         return elem.entry.map((item) => {
-          return item.mal_id
-        })
+          return item.mal_id;
+        });
       })
     ), // array
   };
@@ -323,7 +330,7 @@ const createModalContent = async (id) => {
   modalContainer.classList.add("container", "mx-auto");
 
   const infoContent = document.createElement("div");
-  infoContent.classList.add("flex", "justify-center", "items-start");
+  infoContent.classList.add("flex", "flex-col", "lg:flex-row", "justify-center", "items-start");
   infoContent.innerHTML = `
   <div class="w-[30rem]">
     <img
@@ -332,7 +339,7 @@ const createModalContent = async (id) => {
     />
   </div>
   <div>
-  <h2 class="text-[3rem] font-normal">${dataDetail.title}</h2>
+  <h2 class="text-[3rem] w-[40rem] font-normal">${dataDetail.title}</h2>
   <strong
     class="border border-yellow-500 text-yellow-500 bg-yellow-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide"
   >
@@ -399,16 +406,53 @@ const createModalContent = async (id) => {
   </div>
   `;
 
+  
+
+  const relateContent = document.createElement("div");
+  relateContent.classList.add(
+    "flex",
+    "flex-col",
+    "justify-around",
+    "items-center",
+    "mt-10"
+  );
+  const relateTitle = document.createElement("div");
+  relateTitle.innerHTML = `
+    <h3 class="my-4 text-center text-2xl font-semibold">
+      -- Relations --
+    </h3>
+  `;
+  relateContent.appendChild(relateTitle);
+  const relateGrid = document.createElement("div");
+  relateGrid.classList.add("grid", "grid-cols-3", "gap-6");
+  await dataDetail.relations.forEach((item) => {
+    setTimeout(async () => {
+      const data = await fetchData(
+        `https://api.jikan.moe/v4/anime/${item}/full`
+      );
+  
+      console.log(data);
+  
+      const validateData = {
+        id: data.data.mal_id,
+        title: data.data.title,
+        image: data.data.images.jpg.image_url,
+      }
+  
+      relateGrid.appendChild(cardElem(validateData));
+    },1000)
+  })
+
+  relateContent.appendChild(relateGrid);
+
   modalContainer.appendChild(infoContent);
   modalContainer.appendChild(vidContent);
   modalContainer.appendChild(synopsisContent);
+  modalContainer.appendChild(relateContent);
   modalDetail.appendChild(modalContainer);
   modalDetailOutter.appendChild(modalDetail);
 
-  // const relateContent = document.createElement("div");
-  // relateContent.classList.add("flex", "justify-center", "items-start","mt-10");
-
-  hideSection("loading-modal");
+  // hideSection("loading-modal");
 };
 
 // createModalContent(1)
