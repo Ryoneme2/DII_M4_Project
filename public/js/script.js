@@ -500,6 +500,7 @@ const createModalContent = async (id, type) => {
         `https://api.jikan.moe/v4/anime/${item[0]}/full`
       );
 
+      if(!!data) return
 
       const validateData = {
         id: data.data.mal_id,
@@ -582,10 +583,12 @@ const addToFav = async (id, type) => {
 
   if(!res.ok) {
     showModal("error");
+  } else {
+    showModal("ok");
   }
-  showModal("ok");
 
-  await fetchNewData();
+  await closeModal()
 
-  // event.stopPropagation();
+  // showBlockSection("recommend-section-main");
+  // showBlockSection("popular-section-main");
 };
