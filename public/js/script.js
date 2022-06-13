@@ -3,6 +3,7 @@ const nextPageSearch = document.querySelector("#nextPageSearch");
 const prevPageSearch = document.querySelector("#prevPageSearch");
 var searchPage = 1;
 var maxPage;
+var dataFavorite = [];
 
 var tempLink = "";
 
@@ -116,6 +117,17 @@ searchBtn.addEventListener("click", async (e) => {
 
 const cardElem = (card) => {
   // console.log(card.type);
+  const isCardOnFav = dataFavorite
+    .map((item) => {
+      return {
+        id: item.id,
+        match: item.title === card.title,
+      };
+    })
+    .filter((item) => item.match);
+
+  // console.log(...isCardOnFav);
+
   const realType = validateType(card.type);
   const cardElem = document.createElement("div");
   cardElem.setAttribute(
@@ -138,7 +150,6 @@ const cardElem = (card) => {
   );
   cardElem.setAttribute("style", `background-image: url(${card.image})`);
   const spanHeart = document.createElement("span");
-  spanHeart.setAttribute("ondblclick", `addToFav(${card.id},"${realType}")`);
   spanHeart.classList.add(
     "absolute",
     "z-10",
@@ -157,7 +168,18 @@ const cardElem = (card) => {
     "right-4",
     "top-4"
   );
-  spanHeart.innerHTML = `<img class="w-6 h-6" src="./public/image/icons8-heart-60.png" alt="">`;
+  if (isCardOnFav.length > 0) {
+    if (isCardOnFav[0].match) {
+      spanHeart.setAttribute("ondblclick", `delFromFav("${isCardOnFav[0].id}")`);
+      spanHeart.innerHTML = `<img
+      class="w-6 h-6"
+      src="./public/image/icons8-heart-60 (1).png"
+    />`;
+    }
+  } else {
+    spanHeart.setAttribute("ondblclick", `addToFav(${card.id},"${realType}")`);
+    spanHeart.innerHTML = `<img class="w-6 h-6" src="./public/image/icons8-heart-60.png" alt="">`;
+  }
   const cardDetail = document.createElement("div");
   cardDetail.classList.add(
     "relative",
@@ -211,12 +233,12 @@ const fetchData = async (link) => {
 
   const response = await fetch(link);
 
-  if(response.status === 404) {
+  if (response.status === 404) {
     console.warn(`page not found`);
     return;
   }
 
-  if(response.status !== 200) return
+  if (response.status !== 200) return;
 
   const data = await response.json();
 
@@ -272,6 +294,9 @@ const fetchNewData = async () => {
 };
 
 window.onload = async () => {
+  dataFavorite = await fetchData(
+    `https://se104-project-backend.du.r.appspot.com/movies/642110319`
+  );
   await fetchNewData();
 };
 
@@ -500,7 +525,7 @@ const createModalContent = async (id, type) => {
         `https://api.jikan.moe/v4/anime/${item[0]}/full`
       );
 
-      if(!!data) return
+      if (!!data) return;
 
       const validateData = {
         id: data.data.mal_id,
@@ -536,25 +561,24 @@ const postFetchData = async (data) => {
 };
 
 const closeAlert = () => {
-  hideSection("alert-done")
-  hideSection("alert-error")
-}
+  hideSection("alert-done");
+  hideSection("alert-error");
+};
 
-const closeAlertBtn = Array.from(document.querySelectorAll('.close-alert'))
-closeAlertBtn.map(item => {
-  item.addEventListener('click', closeAlert)
-})
+Array.from(document.querySelectorAll(".close-alert")).map((item) => {
+  item.addEventListener("click", closeAlert);
+});
 
 // ?@param data => { ok, error }
 const showModal = (data) => {
-  if (data.toLowerCase() === "ok"){
+  if (data.toLowerCase() === "ok") {
     showFlexSection("alert-done");
-  } else if (data.toLowerCase() === "error"){
+  } else if (data.toLowerCase() === "error") {
     showFlexSection("alert-error");
-  } else{
+  } else {
     throw Error("param func showModal error");
   }
-}
+};
 
 const addToFav = async (id, type) => {
   const conf = confirm("Add to favorite?");
@@ -581,13 +605,13 @@ const addToFav = async (id, type) => {
   const res = await postFetchData(data);
   console.log(res);
 
-  if(!res.ok) {
+  if (!res.ok) {
     showModal("error");
   } else {
     showModal("ok");
   }
 
-  await closeModal()
+  await closeModal();
 
   // showBlockSection("recommend-section-main");
   // showBlockSection("popular-section-main");
