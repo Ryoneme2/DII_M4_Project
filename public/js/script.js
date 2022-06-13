@@ -210,6 +210,14 @@ const fetchData = async (link) => {
   showFlexSection("loading");
 
   const response = await fetch(link);
+
+  if(response.status === 404) {
+    console.warn(`page not found`);
+    return;
+  }
+
+  if(response.status !== 200) return
+
   const data = await response.json();
 
   hideSection("loading");
@@ -492,12 +500,6 @@ const createModalContent = async (id, type) => {
         `https://api.jikan.moe/v4/anime/${item[0]}/full`
       );
 
-      if(data.status === 404) {
-        console.warn(`${item[0]} dose not exist`);
-        return;
-      }
-
-      if(data.status !== 200) return
 
       const validateData = {
         id: data.data.mal_id,
@@ -532,6 +534,27 @@ const postFetchData = async (data) => {
   return response;
 };
 
+const closeAlert = () => {
+  hideSection("alert-done")
+  hideSection("alert-error")
+}
+
+const closeAlertBtn = Array.from(document.querySelectorAll('.close-alert'))
+closeAlertBtn.map(item => {
+  item.addEventListener('click', closeAlert)
+})
+
+// ?@param data => { ok, error }
+const showModal = (data) => {
+  if (data.toLowerCase() === "ok"){
+    showFlexSection("alert-done");
+  } else if (data.toLowerCase() === "error"){
+    showFlexSection("alert-error");
+  } else{
+    throw Error("param func showModal error");
+  }
+}
+
 const addToFav = async (id, type) => {
   const conf = confirm("Add to favorite?");
   if (!conf) return;
@@ -556,6 +579,11 @@ const addToFav = async (id, type) => {
 
   const res = await postFetchData(data);
   console.log(res);
+
+  if(!res.ok) {
+    showModal("error");
+  }
+  showModal("ok");
 
   await fetchNewData();
 
