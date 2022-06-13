@@ -138,7 +138,7 @@ const cardElem = (card) => {
   );
   cardElem.setAttribute("style", `background-image: url(${card.image})`);
   const spanHeart = document.createElement("span");
-  cardElem.setAttribute("ondblclick", `addToFav(${card.id},"${realType}")`);
+  spanHeart.setAttribute("ondblclick", `addToFav(${card.id},"${realType}")`);
   spanHeart.classList.add(
     "absolute",
     "z-10",
@@ -427,9 +427,12 @@ const createModalContent = async (id, type) => {
   </div>
 </div>`;
 
+  const vidContent = document.createElement("div");
+
   if (realType === "anime") {
+    console.log("do");
     const ytID = dataFullDetail.data.trailer.youtube_id;
-    const vidContent = document.createElement("div");
+    // const vidContent = document.createElement("div");
     vidContent.classList.add("flex", "justify-center", "items-start", "mt-10");
     vidContent.innerHTML = `
     <div>
@@ -481,14 +484,20 @@ const createModalContent = async (id, type) => {
   `;
   relateContent.appendChild(relateTitle);
   const relateGrid = document.createElement("div");
-  relateGrid.classList.add("grid", "grid-cols-3", "gap-6");
+  relateGrid.classList.add("grid", "grid-cols-1", "sm:grid-cols-3", "gap-6");
   await dataDetail.relations.forEach((item) => {
     setTimeout(async () => {
+      // console.log({ item });
       const data = await fetchData(
-        `https://api.jikan.moe/v4/anime/${item}/full`
+        `https://api.jikan.moe/v4/anime/${item[0]}/full`
       );
 
-      console.log(data);
+      if(data.status === 404) {
+        console.warn(`${item[0]} dose not exist`);
+        return;
+      }
+
+      if(data.status !== 200) return
 
       const validateData = {
         id: data.data.mal_id,
@@ -503,7 +512,7 @@ const createModalContent = async (id, type) => {
 
   relateContent.appendChild(relateGrid);
   modalContainer.appendChild(infoContent);
-  // realType === "anime" ? modalContainer.appendChild(vidContent) : null;
+  realType === "anime" ? modalContainer.appendChild(vidContent) : null;
   modalContainer.appendChild(synopsisContent);
   modalContainer.appendChild(relateContent);
   modalDetail.appendChild(modalContainer);
@@ -520,7 +529,7 @@ const postFetchData = async (data) => {
     }
   );
 
-  return response
+  return response;
 };
 
 const addToFav = async (id, type) => {
@@ -545,7 +554,7 @@ const addToFav = async (id, type) => {
     },
   };
 
-  const res = await postFetchData(data)
+  const res = await postFetchData(data);
   console.log(res);
 
   await fetchNewData();
