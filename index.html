@@ -119,6 +119,60 @@
 
     <!-- !CONTENT -->
     <main>
+      <!-- ?Alert -->
+      <div
+        class="hidden items-center justify-between p-4 text-green-700 border rounded border-green-900/10 bg-green-50 fixed right-[50%] translate-x-[50%] bottom-10 z-[20]"
+        role="alert"
+        id="alert-done"
+      >
+        <strong class="text-sm font-medium ml-2 mr-4">
+          Successful!
+        </strong>
+
+        <button class="opacity-90" type="button">
+          <span class="sr-only close-alert"> Close </span>
+
+          <svg
+            class="w-4 h-4"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div
+        class="flex items-center justify-between p-4 text-red-700 border rounded border-red-900/10 bg-red-50 fixed right-[50%] translate-x-[50%] bottom-10 z-[20]"
+        role="alert"
+        id="alert-error"
+      >
+        <strong class="text-sm font-medium mr-2"> Something went wrong please try again! </strong>
+
+        <button class="opacity-90" type="button">
+          <span class="sr-only close-alert"> Close </span>
+
+          <svg
+            class="w-4 h-4"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+      <!-- ?End Alert -->
+
       <!-- ?Header -->
       <div class="container mx-auto px-4 mt-10">
         <h1 class="text-[2.5rem] text-center">Looking For Anime or Manga?</h1>
@@ -174,7 +228,11 @@
         class="w-[100vw] h-[100vh] bg-gray-600 opacity-50 top-0 z-[99] fixed hidden"
         id="modal-bg"
       ></div>
-      <div class="z-[102] absolute top-2 right-2 hidden" onclick="closeModal()" id="modal-close">
+      <div
+        class="z-[102] absolute top-2 right-2 hidden"
+        onclick="closeModal()"
+        id="modal-close"
+      >
         <span class="text-2xl cursor-pointer">&#10005;</span>
       </div>
       <div

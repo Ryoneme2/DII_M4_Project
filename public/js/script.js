@@ -115,7 +115,7 @@ searchBtn.addEventListener("click", async (e) => {
 });
 
 const cardElem = (card) => {
-  console.log(card.type);
+  // console.log(card.type);
   const realType = validateType(card.type);
   const cardElem = document.createElement("div");
   cardElem.setAttribute(
@@ -138,7 +138,7 @@ const cardElem = (card) => {
   );
   cardElem.setAttribute("style", `background-image: url(${card.image})`);
   const spanHeart = document.createElement("span");
-  cardElem.setAttribute("ondblclick", `addToFav(${card.id},${realType})`);
+  cardElem.setAttribute("ondblclick", `addToFav(${card.id},"${realType}")`);
   spanHeart.classList.add(
     "absolute",
     "z-10",
@@ -187,7 +187,7 @@ const cardElem = (card) => {
 
 const createCardElement = (card, selector) => {
   const recommendSection = document.querySelector(`#${selector}`);
-  console.log(card);
+  // console.log(card);
 
   const sectionCard = document.createElement("section");
   sectionCard.classList.add(
@@ -511,7 +511,7 @@ const createModalContent = async (id, type) => {
 };
 
 const postFetchData = async (data) => {
-  const data = await fetch(
+  const response = await fetch(
     "https://se104-project-backend.du.r.appspot.com/movies",
     {
       method: "POST",
@@ -519,9 +519,11 @@ const postFetchData = async (data) => {
       headers: { "Content-type": "application/json; charset=UTF-8" },
     }
   );
+
+  return response
 };
 
-const addToFav = async (event, id, type) => {
+const addToFav = async (id, type) => {
   const conf = confirm("Add to favorite?");
   if (!conf) return;
 
@@ -548,5 +550,5 @@ const addToFav = async (event, id, type) => {
 
   await fetchNewData();
 
-  event.stopPropagation();
+  // event.stopPropagation();
 };
