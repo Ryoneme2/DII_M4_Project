@@ -116,6 +116,7 @@ searchBtn.addEventListener("click", async (e) => {
 
 const cardElem = (card) => {
   console.log(card.type);
+  const realType = validateType(card.type);
   const cardElem = document.createElement("div");
   cardElem.setAttribute(
     "ondblclick",
@@ -137,6 +138,7 @@ const cardElem = (card) => {
   );
   cardElem.setAttribute("style", `background-image: url(${card.image})`);
   const spanHeart = document.createElement("span");
+  cardElem.setAttribute("ondblclick", `addToFav(${card.id},${realType})`);
   spanHeart.classList.add(
     "absolute",
     "z-10",
@@ -229,7 +231,9 @@ const hideSection = (selector) => {
   recommendSection.style.display = "none";
 };
 
-const fetchNewData = async (link) => {
+const fetchNewData = async () => {
+  document.getElementsByTagName("body")[0].style.overflow = "auto";
+
   const { data: dataRecommend } = await fetchData(
     `https://api.jikan.moe/v4/recommendations/anime`
   );
@@ -272,11 +276,36 @@ const closeModal = async () => {
   await fetchNewData();
 };
 
+const validateType = (type) => {
+  const enumAnimeType = ["TV", "OVA", "Movie", "Special", "ONA", "Music"];
+  const enumMangaType = [
+    "Manga",
+    "Novel",
+    "One-shot",
+    "Doujinshi",
+    "Manhua",
+    "Manhwa",
+    "OEL",
+  ];
+
+  let realType;
+
+  if (enumAnimeType.some((_type) => _type === type)) {
+    realType = "anime";
+  } else if (enumMangaType.some((_type) => _type === type)) {
+    realType = "manga";
+  }
+
+  return realType;
+};
+
 const createModalContent = async (id, type) => {
   showBlockSection("modal-bg");
   showBlockSection("modal-detail");
   showBlockSection("modal-detailInner");
   showBlockSection("modal-close");
+
+  document.getElementsByTagName("body")[0].style.overflow = "hidden";
 
   const modalDetail = document.querySelector("#modal-detailInner");
   const modalDetailOuter = document.querySelector("#modal-detail");
@@ -299,24 +328,7 @@ const createModalContent = async (id, type) => {
     return array;
   }
 
-  const enumAnimeType = ["TV", "OVA", "Movie", "Special", "ONA", "Music"];
-  const enumMangaType = [
-    "Manga",
-    "Novel",
-    "One-shot",
-    "Doujinshi",
-    "Manhua",
-    "Manhwa",
-    "OEL",
-  ];
-
-  let realType;
-
-  if (enumAnimeType.some((_type) => _type === type)) {
-    realType = "anime";
-  } else if (enumMangaType.some((_type) => _type === type)) {
-    realType = "manga";
-  }
+  const realType = validateType(type);
 
   console.log({ realType, type });
 
@@ -326,10 +338,8 @@ const createModalContent = async (id, type) => {
 
   const dataDetail = {
     title: dataFullDetail.data.title,
-    // linkUrl: dataFullDetail.data.url,
+    linkUrl: dataFullDetail.data.url,
     image: dataFullDetail.data.images.webp.large_image_url,
-    trailerLink: dataFullDetail.data.trailer.url,
-    trailerLinkEmbed: dataFullDetail.data.trailer.embed_url,
     score: dataFullDetail.data.score,
     synopsis: dataFullDetail.data.synopsis,
     genres: dataFullDetail.data.genres, // array
@@ -405,7 +415,7 @@ const createModalContent = async (id, type) => {
   </div>
   <div class="mt-5">
     <button
-      onclick="addToFav(${dataDetail.id})"
+      onclick="addToFav(${dataDetail.id}, '${realType}')"
       class="inline-block p-[2px] rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-orange-600 hover:text-white active:text-opacity-75 focus:outline-none focus:ring transition"
     >
       <span
@@ -498,4 +508,45 @@ const createModalContent = async (id, type) => {
   modalContainer.appendChild(relateContent);
   modalDetail.appendChild(modalContainer);
   modalDetailOuter.appendChild(modalDetail);
+};
+
+const postFetchData = async (data) => {
+  const data = await fetch(
+    "https://se104-project-backend.du.r.appspot.com/movies",
+    {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    }
+  );
+};
+
+const addToFav = async (event, id, type) => {
+  const conf = confirm("Add to favorite?");
+  if (!conf) return;
+
+  const stdId = "642110319";
+  const movieData = await fetchData(
+    `https://api.jikan.moe/v4/${type}/${id}/full`
+  );
+  const data = {
+    id: stdId,
+    movie: {
+      url: movieData.data.url,
+      image_url: movieData.data.images.webp.image_url,
+      title: movieData.data.title,
+      synopsis: movieData.data.synopsis,
+      type: movieData.data.type,
+      episodes: movieData.data.episodes,
+      score: movieData.data.score,
+      rated: movieData.data.rating,
+    },
+  };
+
+  const res = await postFetchData(data)
+  console.log(res);
+
+  await fetchNewData();
+
+  event.stopPropagation();
 };
