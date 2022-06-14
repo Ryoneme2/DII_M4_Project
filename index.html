@@ -17,7 +17,7 @@
         class="flex items-center justify-between h-16 mx-auto max-w-screen-2xl sm:px-6 lg:px-8"
       >
         <div class="flex items-center">
-          <button type="button" class="p-2 sm:mr-4 md:ml-4 lg:hidden">
+          <button id="hamburger" type="button" class="p-2 sm:mr-4 md:ml-4 lg:hidden">
             <svg
               class="w-6 h-6"
               xmlns="http://www.w3.org/2000/svg"
@@ -36,7 +36,7 @@
 
           <a href="" class="flex">
             <div
-              class="inline-block w-32 h-10 rounded-lg flex justify-center items-center"
+              class="inline-block w-24 sm:w-32 h-10 rounded-lg flex justify-center items-center"
             >
               <p class="m-0 p-0 text-white font-semibold text-xl">Ariga</p>
             </div>
@@ -62,7 +62,7 @@
 
           <div class="flex items-center ml-8">
             <div
-              class="flex items-center border-gray-100 divide-x divide-gray-100 border-x"
+              class="flex items-center border-0 sm:border-gray-100 sm:divide-x sm:divide-gray-100 sm:border-x sm:border-b"
             >
               <span
               class="block p-6 border-b-4 border-transparent hover:border-orange-700 hover:cursor-pointer"
@@ -77,6 +77,13 @@
             </div>
           </div>
         </div>
+      </div>
+      <div id="sub-navbar" class="hidden container mx-auto px-6 mt-4">
+        <ul class="font-semibold">
+          <li class="my-3 cursor-pointer text-white hover:text-red-200 hover:underline transition">Anime</li>
+          <hr>
+          <li class="my-3 cursor-pointer text-white hover:text-red-200 hover:underline transition">Manga</li>
+        </ul>
       </div>
     </header>
     <!-- !END NAVBAR -->

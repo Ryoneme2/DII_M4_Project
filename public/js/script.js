@@ -16,12 +16,17 @@ const menuNav = Array.from(document.querySelectorAll(".menu-nav")).map(
 
       searchOnLoad(data);
 
-      console.log(data);
-
       showBlockSection("search-section-main");
     });
   }
 );
+
+const hamburger = document.querySelector("#hamburger");
+const subNavbar = document.querySelector("#sub-navbar");
+
+hamburger.addEventListener('click', () => {
+  subNavbar.classList.toggle('hidden')
+})
 
 document.getElementById("favorite").addEventListener("click", async (e) => {
   tempLink = `https://se104-project-backend.du.r.appspot.com/movies/642110319`;
@@ -54,8 +59,6 @@ document.getElementById("favorite").addEventListener("click", async (e) => {
 
   searchOnLoad(validateData);
 
-  console.log(rawData);
-
   showBlockSection("search-section-main");
   hideSection("pagination");
   hideSection("nextPageSearch");
@@ -65,14 +68,12 @@ document.getElementById("favorite").addEventListener("click", async (e) => {
 const onClickNextPage = async () => {
   console.log({ searchPage });
 
-  searchPage = parseInt(searchPage) + 1;
-  console.log(searchPage);
-  if (parseInt(searchPage) >= parseInt(maxPage)) {
+  searchPage = +searchPage + 1;
+  console.log(+searchPage);
+  if (+searchPage >= +maxPage) {
     searchPage = maxPage;
   }
-  console.log(`${tempLink}&page=${searchPage}`);
   const data = await fetchData(`${tempLink}&page=${searchPage}`);
-  console.log(data);
 
   searchOnLoad(data);
 
@@ -80,8 +81,8 @@ const onClickNextPage = async () => {
 };
 
 const onClickPrevPage = async () => {
-  searchPage = parseInt(searchPage) - 1;
-  if (parseInt(searchPage) <= 1) {
+  searchPage = +searchPage - 1;
+  if (+searchPage <= 1) {
     searchPage = 1;
   }
   const data = await fetchData(`${tempLink}&page=${searchPage}`);
@@ -120,7 +121,6 @@ const searchOnLoad = (data) => {
   }
 
   data.data.forEach((item) => {
-    console.log(item);
     const cardInfo = {
       id: item.mal_id,
       title: item.title,
@@ -483,7 +483,9 @@ const createModalContent = async (id, type) => {
     "flex-col",
     "lg:flex-row",
     "justify-center",
-    "items-start"
+    "lg:items-start",
+    "items-center",
+
   );
   let btnInnerHtml =''
   if(isCardOnFav.length <= 0){
@@ -512,14 +514,14 @@ const createModalContent = async (id, type) => {
     </button>`
   }
   infoContent.innerHTML = `
-  <div class="w-[30rem]">
+  <div class="w-[30rem] flex justify-center lg:justify-start">
     <img
-      class="w-auto h-[33rem]"
+      class="w-auto h-[23rem] sm:h-[27rem] md:h-[33rem]"
       src="${dataDetail.image}"
     />
   </div>
   <div>
-  <h2 class="text-[3rem] w-[40rem] font-normal">${dataDetail.title}</h2>
+  <h2 class="text-[3rem] w-[20rem] md:w-[40rem] font-normal text-center lg:text-start">${dataDetail.title}</h2>
   <strong
     class="border border-${colorBadge}-500 text-${colorBadge}-500 bg-${colorBadge}-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide"
   >
@@ -555,7 +557,7 @@ const createModalContent = async (id, type) => {
     </div>
     <div>
       <iframe
-        class="aspect-video w-[45rem]"
+        class="aspect-video w-[23rem] md:w-[45rem]"
         src="https://www.youtube.com/embed/${ytID}"
         title="YouTube video player"
         frameborder="0"
