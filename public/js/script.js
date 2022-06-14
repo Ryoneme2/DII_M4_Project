@@ -420,6 +420,7 @@ const createModalContent = async (id, type) => {
 
   console.log({ realType, type });
 
+
   const dataFullDetail = await fetchData(
     `https://api.jikan.moe/v4/${realType}/${id}/full`
   );
@@ -441,11 +442,13 @@ const createModalContent = async (id, type) => {
         .slice(0, 3)
     ), // array
   };
-  console.log(dataDetail);
+
+  const colorBadge = realType === 'anime' ? 'teal' : 'blue'
+  const colorScore = +dataDetail.score > 7.5 ? 'green' : 'yellow'
 
   const isCardOnFav = isMatch({title : dataDetail.title})
 
-  console.log(isCardOnFav);
+  // console.log(isCardOnFav);
 
   const genreElement = dataDetail.genres.map((item) => {
     const elem = document.createElement("strong");
@@ -518,12 +521,12 @@ const createModalContent = async (id, type) => {
   <div>
   <h2 class="text-[3rem] w-[40rem] font-normal">${dataDetail.title}</h2>
   <strong
-    class="border border-yellow-500 text-yellow-500 bg-yellow-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide"
+    class="border border-${colorBadge}-500 text-${colorBadge}-500 bg-${colorBadge}-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide"
   >
-    Anime
+    ${type}
   </strong>
   <strong
-    class="border border-yellow-500 text-yellow-500 bg-yellow-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide mx-2"
+    class="border border-${colorScore}-500 text-${colorScore}-500 bg-${colorScore}-100 uppercase px-5 py-1.5 rounded-full text-[10px] tracking-wide mx-2"
   >
     ${dataDetail.score} / 10
   </strong>
