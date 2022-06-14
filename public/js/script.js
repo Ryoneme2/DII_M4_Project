@@ -40,7 +40,7 @@ document.getElementById("favorite").addEventListener("click", async (e) => {
     },
     data: rawData.map((item) => {
       return {
-        mal_id: item.id,
+        mal_id: item.score.split('/')[1],
         title: item.title,
         images: {
           jpg: {
@@ -158,9 +158,8 @@ searchBtn.addEventListener("click", async (e) => {
   searchTitle.innerHTML = `<span class="font-semibold">Result for <span class="uppercase text-orange-500 text-[1.4rem]">"${searchInput}"</span></span>`;
 });
 
-const cardElem = (card) => {
-  // console.log(card.type);
-  const isCardOnFav = dataFavorite
+const isMatch = (card) => {
+  const result = dataFavorite
     .map((item) => {
       return {
         id: item.id,
@@ -168,6 +167,13 @@ const cardElem = (card) => {
       };
     })
     .filter((item) => item.match);
+
+    return result
+}
+
+const cardElem = (card) => {
+  // console.log(card.type);
+  const isCardOnFav = isMatch(card)
 
   // console.log(...isCardOnFav);
 
@@ -437,6 +443,10 @@ const createModalContent = async (id, type) => {
   };
   console.log(dataDetail);
 
+  const isCardOnFav = isMatch({title : dataDetail.title})
+
+  console.log(isCardOnFav);
+
   const genreElement = dataDetail.genres.map((item) => {
     const elem = document.createElement("strong");
     elem.classList.add(
@@ -472,6 +482,32 @@ const createModalContent = async (id, type) => {
     "justify-center",
     "items-start"
   );
+  let btnInnerHtml =''
+  if(isCardOnFav.length <= 0){
+    btnInnerHtml = `
+    <button
+      onclick="addToFav(${dataDetail.id}, '${realType}')"
+      class="inline-block hover:cursor-pointer p-[2px] rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-orange-600 hover:text-white active:text-opacity-75 focus:outline-none focus:ring transition"
+    >
+      <span
+        class="block px-8 py-3 text-sm font-medium bg-white rounded-full hover:bg-transparent"
+      >
+        Add to Favorite
+      </span>
+    </button>`
+  } else {
+    btnInnerHtml = `
+    <button
+      onclick="delFromFav('${isCardOnFav[0].id}')"
+      class="inline-block hover:cursor-pointer p-[2px] rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-orange-600 hover:text-white active:text-opacity-75 focus:outline-none focus:ring transition"
+    >
+      <span
+        class="block px-8 py-3 text-sm font-medium bg-white rounded-full hover:bg-transparent"
+      >
+        Delete to Favorite
+      </span>
+    </button>`
+  }
   infoContent.innerHTML = `
   <div class="w-[30rem]">
     <img
@@ -498,16 +534,7 @@ const createModalContent = async (id, type) => {
     })}
   </div>
   <div class="mt-5">
-    <button
-      onclick="addToFav(${dataDetail.id}, '${realType}')"
-      class="inline-block p-[2px] rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-orange-600 hover:text-white active:text-opacity-75 focus:outline-none focus:ring transition"
-    >
-      <span
-        class="block px-8 py-3 text-sm font-medium bg-white rounded-full hover:bg-transparent"
-      >
-        Add to Favorite
-      </span>
-    </a>
+    ${btnInnerHtml}
   </div>
 </div>`;
 
@@ -668,6 +695,7 @@ const delFromFav = async (id) => {
   );
 
   await closeModal();
+  window.location.reload();
 };
 
 const addToFav = async (id, type) => {
@@ -705,4 +733,5 @@ const addToFav = async (id, type) => {
   );
 
   await closeModal();
+  window.location.reload();
 };
