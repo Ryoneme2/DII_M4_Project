@@ -23,6 +23,45 @@ const menuNav = Array.from(document.querySelectorAll(".menu-nav")).map(
   }
 );
 
+document.getElementById("favorite").addEventListener("click", async (e) => {
+  tempLink = `https://se104-project-backend.du.r.appspot.com/movies/642110319`;
+  const rawData = await fetchData(tempLink);
+
+  const validateData = {
+    pagination: {
+      last_visible_page: 1,
+      has_next_page: false,
+      current_page: 1,
+      items: {
+        count: 25,
+        total: 24290,
+        per_page: 25,
+      },
+    },
+    data: rawData.map((item) => {
+      return {
+        mal_id: item.id,
+        title: item.title,
+        images: {
+          jpg: {
+            image_url: item.image_url,
+          },
+        },
+        type: item.type,
+      };
+    }),
+  };
+
+  searchOnLoad(validateData);
+
+  console.log(rawData);
+
+  showBlockSection("search-section-main");
+  hideSection("pagination");
+  hideSection("nextPageSearch");
+  hideSection("prevPageSearch");
+});
+
 const onClickNextPage = async () => {
   console.log({ searchPage });
 
@@ -53,6 +92,10 @@ const onClickPrevPage = async () => {
 };
 
 const searchOnLoad = (data) => {
+  showBlockSection("pagination");
+  showFlexSection("nextPageSearch");
+  showFlexSection("prevPageSearch");
+
   const searchSection = document.querySelector(`#search-section`);
   const paginationElem = document.querySelector(`#pagination`);
 
@@ -170,7 +213,10 @@ const cardElem = (card) => {
   );
   if (isCardOnFav.length > 0) {
     if (isCardOnFav[0].match) {
-      spanHeart.setAttribute("ondblclick", `delFromFav("${isCardOnFav[0].id}")`);
+      spanHeart.setAttribute(
+        "ondblclick",
+        `delFromFav("${isCardOnFav[0].id}")`
+      );
       spanHeart.innerHTML = `<img
       class="w-6 h-6"
       src="./public/image/icons8-heart-60 (1).png"
@@ -238,7 +284,10 @@ const fetchData = async (link) => {
     return;
   }
 
-  if (response.status !== 200) return;
+  if (response.status !== 200) {
+    console.warn(`error ${response.status}`);
+    return {};
+  }
 
   const data = await response.json();
 
@@ -377,11 +426,13 @@ const createModalContent = async (id, type) => {
     synopsis: dataFullDetail.data.synopsis,
     genres: dataFullDetail.data.genres, // array
     relations: shuffle(
-      dataFullDetail.data.relations.map((elem) => {
-        return elem.entry.map((item) => {
-          return item.mal_id;
-        });
-      })
+      dataFullDetail.data.relations
+        .map((elem) => {
+          return elem.entry.map((item) => {
+            return item.mal_id;
+          });
+        })
+        .slice(0, 3)
     ), // array
   };
   console.log(dataDetail);
@@ -518,24 +569,26 @@ const createModalContent = async (id, type) => {
   relateContent.appendChild(relateTitle);
   const relateGrid = document.createElement("div");
   relateGrid.classList.add("grid", "grid-cols-1", "sm:grid-cols-3", "gap-6");
-  await dataDetail.relations.forEach((item) => {
-    setTimeout(async () => {
-      // console.log({ item });
-      const data = await fetchData(
-        `https://api.jikan.moe/v4/anime/${item[0]}/full`
-      );
+  await dataDetail.relations.forEach(async (item) => {
+    await new Promise(() =>
+      setTimeout(async () => {
+        const data = await fetchData(
+          `https://api.jikan.moe/v4/anime/${item[0]}/full`
+        );
+        console.log(data);
 
-      if (!!data) return;
+        if (data != {}) {
+          const validateData = {
+            id: data.data.mal_id,
+            title: data.data.title,
+            image: data.data.images.jpg.image_url,
+            type: data.data.type,
+          };
 
-      const validateData = {
-        id: data.data.mal_id,
-        title: data.data.title,
-        image: data.data.images.jpg.image_url,
-        type: data.data.type,
-      };
-
-      relateGrid.appendChild(cardElem(validateData));
-    }, 1000);
+          relateGrid.appendChild(cardElem(validateData));
+        }
+      }, 1000)
+    );
   });
 
   relateContent.appendChild(relateGrid);
@@ -547,6 +600,10 @@ const createModalContent = async (id, type) => {
   modalDetailOuter.appendChild(modalDetail);
 };
 
+const timeout = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
 const postFetchData = async (data) => {
   const response = await fetch(
     "https://se104-project-backend.du.r.appspot.com/movies",
@@ -554,6 +611,16 @@ const postFetchData = async (data) => {
       method: "POST",
       body: JSON.stringify(data),
       headers: { "Content-type": "application/json; charset=UTF-8" },
+    }
+  );
+
+  return response;
+};
+const delData = async (stdId, movId) => {
+  const response = await fetch(
+    `https://se104-project-backend.du.r.appspot.com/movie?id=${stdId}&&movieId=${movId}`,
+    {
+      method: "DELETE",
     }
   );
 
@@ -580,6 +647,29 @@ const showModal = (data) => {
   }
 };
 
+const delFromFav = async (id) => {
+  const conf = confirm("Delete to favorite?");
+  if (!conf) return;
+
+  const stdId = "642110319";
+
+  const res = await delData(stdId, id);
+
+  console.log(res);
+
+  if (!res.ok) {
+    showModal("error");
+  } else {
+    showModal("ok");
+  }
+
+  dataFavorite = await fetchData(
+    `https://se104-project-backend.du.r.appspot.com/movies/642110319`
+  );
+
+  await closeModal();
+};
+
 const addToFav = async (id, type) => {
   const conf = confirm("Add to favorite?");
   if (!conf) return;
@@ -597,13 +687,12 @@ const addToFav = async (id, type) => {
       synopsis: movieData.data.synopsis,
       type: movieData.data.type,
       episodes: movieData.data.episodes,
-      score: movieData.data.score,
+      score: `${movieData.data.score}/${id}`,
       rated: movieData.data.rating,
     },
   };
 
   const res = await postFetchData(data);
-  console.log(res);
 
   if (!res.ok) {
     showModal("error");
@@ -611,8 +700,9 @@ const addToFav = async (id, type) => {
     showModal("ok");
   }
 
-  await closeModal();
+  dataFavorite = await fetchData(
+    `https://se104-project-backend.du.r.appspot.com/movies/642110319`
+  );
 
-  // showBlockSection("recommend-section-main");
-  // showBlockSection("popular-section-main");
+  await closeModal();
 };
