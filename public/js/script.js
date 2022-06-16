@@ -803,6 +803,8 @@ const delFromFav = async (id) => {
   dataFavorite = await fetchData(
     `https://se104-project-backend.du.r.appspot.com/movies/642110319`
   );
+
+  window.location.reload();
 };
 
 const addToFav = async (id, type) => {
