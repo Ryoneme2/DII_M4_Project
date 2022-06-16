@@ -6,8 +6,10 @@ var maxPage;
 var dataFavorite = [];
 var dataRecommend = [];
 var dataPopular = [];
+var genre = []
 
 var tempLink = "";
+
 
 const menuNav = Array.from(document.querySelectorAll(".menu-nav")).map(
   (item) => {
@@ -364,6 +366,8 @@ window.onload = async () => {
   dataRecommend = await fetchData(
     `https://api.jikan.moe/v4/recommendations/anime`
   );
+  genre = await fetchData('/public/js/genre.json')
+  console.log(genre);
   dataPopular = await fetchData(`https://api.jikan.moe/v4/top/anime`);
 
   fetchNewData();
