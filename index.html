@@ -410,7 +410,8 @@
               </div>
             </section>
 
-            <footer class="flex items-center justify-end p-6">
+            <footer class="flex flex-col sm:flex-row items-center justify-between p-6">
+              <button class="text-sm font-medium text-gray-600 underline" type="reset">Clear all</button>
               <div>
                 <button
                   class="px-5 py-3 font-medium text-white bg-gray-200 rounded-lg my-2"
@@ -598,7 +599,7 @@
           >
             <a
               id="prevPageSearch"
-              class="inline-flex items-center justify-center cursor-pointer w-10 h-10 border border-gray-100 rounded"
+              class="hidden items-center justify-center cursor-pointer w-10 h-10 border border-gray-100 rounded"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -614,7 +615,7 @@
               </svg>
             </a>
 
-            <p id="pagination" class="text-xs">
+            <p id="pagination" class="hidden text-xs">
               3
               <span class="mx-0.25">/</span>
               12
@@ -622,7 +623,7 @@
 
             <a
               id="nextPageSearch"
-              class="inline-flex items-center justify-center cursor-pointer w-10 h-10 border border-gray-100 rounded"
+              class="hidden items-center justify-center cursor-pointer w-10 h-10 border border-gray-100 rounded"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -659,7 +660,6 @@
           >
             <a href="" class="hover:opacity-75"> FAQs </a>
             <a href="" class="hover:opacity-75"> Contact </a>
-            <a href="" class="hover:opacity-75"> Returns Policy </a>
           </nav>
 
           <div

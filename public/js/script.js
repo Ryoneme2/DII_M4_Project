@@ -6,16 +6,43 @@ var maxPage;
 var dataFavorite = [];
 var dataRecommend = [];
 var dataPopular = [];
-var genre = []
+var genre = [];
+
+var filterOption = {
+  rating: "",
+  genre: "",
+  type: "",
+};
 
 var tempLink = "";
 
-document.getElementById('filter-btn').addEventListener('click', () => {
-  document.getElementById('filter-section').classList.toggle('hidden');
-})
-document.getElementById('apply-filter').addEventListener('click', () => {
-  document.getElementById('filter-section').classList.toggle('hidden');
-})
+const toggleFilter = () => {
+  document.getElementById("filter-section").classList.toggle("hidden");
+
+  if (document.querySelector('input[name="rating"]:checked') == null) {
+    filterOption.rating = "";
+  } else {
+    filterOption.rating =
+      document.querySelector('input[name="rating"]:checked').value || "";
+  }
+
+  if (document.querySelector('input[name="types"]:checked') == null) {
+    filterOption.type = "";
+  } else {
+    filterOption.type =
+      document.querySelector('input[name="types"]:checked').value || "";
+  }
+  const genre = document.querySelector("#genre").value || "";
+
+  filterOption = {
+    ...filterOption,
+    genre,
+  };
+  console.log(filterOption);
+};
+
+document.getElementById("filter-btn").addEventListener("click", toggleFilter);
+document.getElementById("apply-filter").addEventListener("click", toggleFilter);
 
 const menuNav = Array.from(document.querySelectorAll(".menu-nav")).map(
   (item) => {
@@ -140,6 +167,11 @@ const searchOnLoad = (data) => {
 
     searchSection.appendChild(cardElem(cardInfo));
   });
+  filterOption = {
+    rating: "",
+    genre: "",
+    type: "",
+  };
   showBlockSection("search-section-main");
 };
 
@@ -150,15 +182,44 @@ prevPageSearch.addEventListener("click", async () => {
   await onClickPrevPage();
 });
 
+const getFilterParam = () => {
+  let filterContext = "";
+
+  Object.entries(filterOption).map(([key, value]) => {
+    if (value !== "") {
+      filterContext += `&${key}=${value}`;
+    }
+  });
+
+  return filterContext;
+};
+
+document
+  .getElementById("search-without-name")
+  .addEventListener("click", async (e) => {
+    toggleFilter()
+    const filterContext = getFilterParam();
+
+    tempLink = `https://api.jikan.moe/v4/anime?sfw${filterContext}`;
+
+    const data = await fetchData(tempLink);
+
+    searchOnLoad(data);
+
+    console.log(data);
+
+    showBlockSection("search-section-main");
+  });
+
 searchBtn.addEventListener("click", async (e) => {
   const searchInput = document.querySelector("#searchInput").value;
   const searchTitle = document.querySelector(`#SeachTitle`);
 
-  tempLink = `https://api.jikan.moe/v4/anime?q=${searchInput}&sfw`;
+  const filterContext = getFilterParam();
 
-  const data = await fetchData(
-    `https://api.jikan.moe/v4/anime?q=${searchInput}&sfw`
-  );
+  tempLink = `https://api.jikan.moe/v4/anime?q=${searchInput}&sfw${filterContext}`;
+
+  const data = await fetchData(tempLink);
 
   searchOnLoad(data);
 
@@ -341,13 +402,15 @@ const setVisibleOn = (selector) => {
 const fetchNewData = () => {
   document.getElementsByTagName("body")[0].style.overflow = "auto";
 
-  let genreHTML = ''
+  let genreHTML = "";
+
+  genreHTML += `<option value="">None</option>`;
 
   genre.data.forEach((item) => {
-    genreHTML += `<option value="${item.mal_id}">${item.name}</option>`
-  })
+    genreHTML += `<option value="${item.mal_id}">${item.name}</option>`;
+  });
 
-  document.getElementById('genre').innerHTML = genreHTML
+  document.getElementById("genre").innerHTML = genreHTML;
 
   dataRecommend.data.slice(1, 16).forEach((card) => {
     const randomNum0to1 = Math.floor(Math.random() * 2);
@@ -380,7 +443,7 @@ window.onload = async () => {
   dataRecommend = await fetchData(
     `https://api.jikan.moe/v4/recommendations/anime`
   );
-  genre = await fetchData('https://api.jikan.moe/v4/genres/anime')
+  genre = await fetchData("https://api.jikan.moe/v4/genres/anime");
   console.log(genre);
   dataPopular = await fetchData(`https://api.jikan.moe/v4/top/anime`);
 
