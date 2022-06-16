@@ -206,21 +206,19 @@
             />
           </div>
         </div>
-        <div
-          class="p-4"
-        >
+        <div class="p-4 md:w-full">
           <!-- rating type genre -->
 
           <form
-            class="relative w-screen max-w-lg mx-auto overflow-auto bg-white divide-y divide-gray-100 rounded-lg shadow-2xl"
-            role="dialog"
-            aria-label="Filters"
+            class="relative sm:w-[90%] max-w-lg mx-auto overflow-auto bg-white divide-y divide-gray-100 rounded-lg shadow-2xl"
           >
             <header class="p-6 text-center">
               <p class="text-lg font-medium">Filter</p>
             </header>
-
-            <section id="filter" class="flow-root p-6 overflow-y-auto h-96">
+            <section
+              id="filter"
+              class="flow-root p-6 overflow-y-auto h-96 w-auto"
+            >
               <div class="-my-8 divide-y divide-gray-100">
                 <div class="py-8">
                   <fieldset>
@@ -229,42 +227,82 @@
                     <ul class="grid grid-cols-1 gap-4 mt-6 sm:grid-cols-2">
                       <li>
                         <label class="flex items-center text-sm">
-                          <input type="radio" id="rating" name="rating" value="g" class="w-6 h-6 border-gray-200" />
+                          <input
+                            type="radio"
+                            id="rating"
+                            name="rating"
+                            value="g"
+                            class="w-6 h-6 border-gray-200"
+                          />
                           <span class="ml-3 font-medium">G - All Ages</span>
                         </label>
                       </li>
 
                       <li>
                         <label class="flex items-center text-sm">
-                          <input type="radio" id="rating" name="rating" value="pg" class="w-6 h-6 border-gray-200" />
+                          <input
+                            type="radio"
+                            id="rating"
+                            name="rating"
+                            value="pg"
+                            class="w-6 h-6 border-gray-200"
+                          />
                           <span class="ml-3 font-medium">PG - Children</span>
                         </label>
                       </li>
 
                       <li>
                         <label class="flex items-center text-sm">
-                          <input type="radio" id="rating" name="rating" value="pg13" class="w-6 h-6 border-gray-200" />
-                          <span class="ml-3 font-medium">PG-13 - Teens 13 or older</span>
+                          <input
+                            type="radio"
+                            id="rating"
+                            name="rating"
+                            value="pg13"
+                            class="w-6 h-6 border-gray-200"
+                          />
+                          <span class="ml-3 font-medium"
+                            >PG-13 - Teens 13 or older</span
+                          >
                         </label>
                       </li>
 
                       <li>
                         <label class="flex items-center text-sm">
-                          <input type="radio" id="rating" name="rating" value="r17" class="w-6 h-6 border-gray-200" />
-                          <span class="ml-3 font-medium">R - 17+ recommended</span>
+                          <input
+                            type="radio"
+                            id="rating"
+                            name="rating"
+                            value="r17"
+                            class="w-6 h-6 border-gray-200"
+                          />
+                          <span class="ml-3 font-medium"
+                            >R - 17+ recommended</span
+                          >
                         </label>
                       </li>
 
                       <li>
                         <label class="flex items-center text-sm">
-                          <input type="radio" id="rating" name="rating" value="r" class="w-6 h-6 border-gray-200" />
+                          <input
+                            type="radio"
+                            id="rating"
+                            name="rating"
+                            value="r"
+                            class="w-6 h-6 border-gray-200"
+                          />
                           <span class="ml-3 font-medium">R+ - Mild Nudity</span>
                         </label>
                       </li>
 
                       <li>
                         <label class="flex items-center text-sm">
-                          <input type="radio" id="rating" name="rating" value="rx" class="w-6 h-6 border-gray-200" />
+                          <input
+                            type="radio"
+                            id="rating"
+                            name="rating"
+                            value="rx"
+                            class="w-6 h-6 border-gray-200"
+                          />
                           <span class="ml-3 font-medium">Rx - Hentai</span>
                         </label>
                       </li>
@@ -279,42 +317,78 @@
                     <ul class="grid grid-cols-1 gap-4 mt-6 sm:grid-cols-2">
                       <li>
                         <label class="flex items-center text-sm">
-                          <input type="radio" id="types" name="types" value="tv" class="w-6 h-6 border-gray-200" />
+                          <input
+                            type="radio"
+                            id="types"
+                            name="types"
+                            value="tv"
+                            class="w-6 h-6 border-gray-200"
+                          />
                           <span class="ml-3 font-medium">TV</span>
                         </label>
                       </li>
 
                       <li>
                         <label class="flex items-center text-sm">
-                          <input type="radio" id="types" name="types" value="ova" class="w-6 h-6 border-gray-200" />
+                          <input
+                            type="radio"
+                            id="types"
+                            name="types"
+                            value="ova"
+                            class="w-6 h-6 border-gray-200"
+                          />
                           <span class="ml-3 font-medium">OVA</span>
                         </label>
                       </li>
 
                       <li>
                         <label class="flex items-center text-sm">
-                          <input type="radio" id="types" name="types" value="movie" class="w-6 h-6 border-gray-200" />
+                          <input
+                            type="radio"
+                            id="types"
+                            name="types"
+                            value="movie"
+                            class="w-6 h-6 border-gray-200"
+                          />
                           <span class="ml-3 font-medium">MOVIE</span>
                         </label>
                       </li>
 
                       <li>
                         <label class="flex items-center text-sm">
-                          <input type="radio" id="types" name="types" value="spacial" class="w-6 h-6 border-gray-200" />
+                          <input
+                            type="radio"
+                            id="types"
+                            name="types"
+                            value="spacial"
+                            class="w-6 h-6 border-gray-200"
+                          />
                           <span class="ml-3 font-medium">SPACIAL</span>
                         </label>
                       </li>
 
                       <li>
                         <label class="flex items-center text-sm">
-                          <input type="radio" id="types" name="types" value="ona" class="w-6 h-6 border-gray-200" />
+                          <input
+                            type="radio"
+                            id="types"
+                            name="types"
+                            value="ona"
+                            class="w-6 h-6 border-gray-200"
+                          />
                           <span class="ml-3 font-medium">ONA</span>
                         </label>
                       </li>
 
                       <li>
                         <label class="flex items-center text-sm">
-                          <input type="radio" id="types" name="types" value="music" class="w-6 h-6 border-gray-200" />
+                          <input
+                            type="radio"
+                            id="types"
+                            name="types"
+                            value="music"
+                            class="w-6 h-6 border-gray-200"
+                          />
                           <span class="ml-3 font-medium">MUSIC</span>
                         </label>
                       </li>
@@ -324,30 +398,32 @@
                 <div class="py-8">
                   <fieldset>
                     <legend class="text-xl font-medium">Anime Rating</legend>
-                    <select name="genre" id="genre" class="mt-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+                    <select
+                      name="genre"
+                      id="genre"
+                      class="mt-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    >
                       <option disabled>All Genre</option>
                     </select>
                   </fieldset>
                 </div>
-
-                
               </div>
             </section>
 
             <footer class="flex items-center justify-end p-6">
               <div>
                 <button
-                class="px-5 py-3 font-medium text-white bg-black rounded-lg"
-                type="button"
-              >
-                Apply
-              </button>
-              <button
-              class="px-5 py-3 font-medium text-white bg-black rounded-lg"
-              type="button"
-            >
-              Search without name
-            </button>
+                  class="px-5 py-3 font-medium text-white bg-gray-200 rounded-lg my-2"
+                  type="button"
+                >
+                  <span class="text-gray-400">Search without name</span>
+                </button>
+                <button
+                  class="px-5 py-3 font-medium text-white bg-black rounded-lg"
+                  type="button"
+                >
+                  Apply
+                </button>
               </div>
             </footer>
           </form>

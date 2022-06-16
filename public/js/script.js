@@ -366,7 +366,7 @@ window.onload = async () => {
   dataRecommend = await fetchData(
     `https://api.jikan.moe/v4/recommendations/anime`
   );
-  genre = await fetchData('/public/js/genre.json')
+  genre = await fetchData('https://api.jikan.moe/v4/genres/anime')
   console.log(genre);
   dataPopular = await fetchData(`https://api.jikan.moe/v4/top/anime`);
 
