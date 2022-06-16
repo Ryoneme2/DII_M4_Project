@@ -6,6 +6,7 @@ var maxPage;
 var dataFavorite = [];
 var dataRecommend = [];
 var dataPopular = [];
+var allDataCardId = [];
 
 var tempLink = "";
 
@@ -26,9 +27,11 @@ const menuNav = Array.from(document.querySelectorAll(".menu-nav")).map(
 const hamburger = document.querySelector("#hamburger");
 const subNavbar = document.querySelector("#sub-navbar");
 
-hamburger.addEventListener("click", () => {
-  subNavbar.classList.toggle("hidden");
-});
+if(hamburger != null && subNavbar != null) {
+  hamburger.addEventListener("click", () => {
+    subNavbar.classList.toggle("hidden");
+  });
+}
 
 document.getElementById("favorite").addEventListener("click", async (e) => {
   tempLink = `https://se104-project-backend.du.r.appspot.com/movies/642110319`;
@@ -307,31 +310,49 @@ const fetchData = async (link) => {
   return data;
 };
 
-const showFlexSection = (selector) => {
-  const recommendSection = document.querySelector(`#${selector}`);
+const showFlexSection = (selector:string) => {
+  const recommendSection = document.querySelector(`#${selector}`) as HTMLElement;
+  if(recommendSection == null) return
   recommendSection.style.display = "flex";
 };
 
-const showBlockSection = (selector) => {
-  const recommendSection = document.querySelector(`#${selector}`);
+const showBlockSection = (selector:string) => {
+  const recommendSection = document.querySelector(`#${selector}`) as HTMLElement;
+  if(recommendSection == null) return
   recommendSection.style.display = "block";
 };
 
-const hideSection = (selector) => {
-  const recommendSection = document.querySelector(`#${selector}`);
+const hideSection = (selector:string) => {
+  const recommendSection = document.querySelector(`#${selector}`) as HTMLElement;
+  if(recommendSection == null) return
   recommendSection.style.display = "none";
 };
-const setVisibleOff = (selector) => {
-  const recommendSection = document.querySelector(`#${selector}`);
+const setVisibleOff = (selector:string) => {
+  const recommendSection = document.querySelector(`#${selector}`) as HTMLElement;
+  if(recommendSection == null) return
   recommendSection.style.visibility = "hidden";
 };
-const setVisibleOn = (selector) => {
-  const recommendSection = document.querySelector(`#${selector}`);
+const setVisibleOn = (selector:string) => {
+  const recommendSection = document.querySelector(`#${selector}`) as HTMLElement;
+  if(recommendSection == null) return
   recommendSection.style.visibility = "visible";
 };
 
 const fetchNewData = () => {
   document.getElementsByTagName("body")[0].style.overflow = "auto";
+
+  const dataRecommendId = [];
+  dataRecommend.data.slice(1, 16).map((item) => {
+    item.entry.forEach((sup_item) => {
+      dataRecommendId.push(sup_item.mal_id);
+    });
+  });
+  const dataPopularId = dataPopular.data.slice(1, 16).map((item) => {
+    return item.mal_id;
+  });
+  allDataCardId = Array.from(new Set([...dataRecommendId, ...dataPopularId]));
+
+  console.log(allDataCardId);
 
   dataRecommend.data.slice(1, 16).forEach((card) => {
     const randomNum0to1 = Math.floor(Math.random() * 2);
@@ -351,6 +372,17 @@ const fetchNewData = () => {
       type: "Movie",
     };
     createCardElement(cardInfo, "popular-section");
+  });
+  allDataCardId.map((item) => {
+    console.log(`fav-${item}`);
+    if (document.getElementById(`fav-${item}`) != null) {
+      document
+        .getElementById(`fav-${item}`)
+        .addEventListener("click", async (e) => {
+          alert("Add to favorite?");
+          e.stopPropagation();
+        });
+    }
   });
   showBlockSection("recommend-section-main");
   showBlockSection("popular-section-main");
@@ -703,7 +735,7 @@ const showModal = (data) => {
 const delFromFav = async (id) => {
   const conf = confirm("Delete to favorite?");
   if (!conf) {
-    window.location.reload();
+    closeModal();
     return;
   }
 
@@ -726,10 +758,7 @@ const delFromFav = async (id) => {
 
 const addToFav = async (id, type) => {
   const conf = confirm("Add to favorite?");
-  if (!conf) {
-    window.location.reload();
-    return;
-  }
+  if (!conf) return;
 
   const stdId = "642110319";
   const movieData = await fetchData(
@@ -762,5 +791,5 @@ const addToFav = async (id, type) => {
     `https://se104-project-backend.du.r.appspot.com/movies/642110319`
   );
 
-  window.location.reload();
+  // window.location.reload();
 };
