@@ -10,6 +10,12 @@ var genre = []
 
 var tempLink = "";
 
+document.getElementById('filter-btn').addEventListener('click', () => {
+  document.getElementById('filter-section').classList.toggle('hidden');
+})
+document.getElementById('apply-filter').addEventListener('click', () => {
+  document.getElementById('filter-section').classList.toggle('hidden');
+})
 
 const menuNav = Array.from(document.querySelectorAll(".menu-nav")).map(
   (item) => {
@@ -334,6 +340,14 @@ const setVisibleOn = (selector) => {
 
 const fetchNewData = () => {
   document.getElementsByTagName("body")[0].style.overflow = "auto";
+
+  let genreHTML = ''
+
+  genre.data.forEach((item) => {
+    genreHTML += `<option value="${item.mal_id}">${item.name}</option>`
+  })
+
+  document.getElementById('genre').innerHTML = genreHTML
 
   dataRecommend.data.slice(1, 16).forEach((card) => {
     const randomNum0to1 = Math.floor(Math.random() * 2);
