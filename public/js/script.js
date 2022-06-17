@@ -10,7 +10,7 @@ var genre = [];
 
 var filterOption = {
   rating: "",
-  genre: "",
+  genres: "",
   type: "",
 };
 
@@ -32,11 +32,11 @@ const toggleFilter = () => {
     filterOption.type =
       document.querySelector('input[name="types"]:checked').value || "";
   }
-  const genre = document.querySelector("#genre").value || "";
+  const genres = document.querySelector("#genre").value || "";
 
   filterOption = {
     ...filterOption,
-    genre,
+    genres,
   };
   console.log(filterOption);
 };
